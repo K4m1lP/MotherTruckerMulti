@@ -3,7 +3,6 @@ import random
 from time import time_ns as get_time
 import math
 
-from Main.KeyListener import KeyListener
 from EntityComponentSystem.System.System import System
 from EntityComponentSystem.Components.DynamicsComponent import DynamicsComponent
 from EntityComponentSystem.Components.PositionComponent import PositionComponent
@@ -14,7 +13,7 @@ class ShootingSystem(System):
     def __init__(self, entity_manager, entity_factory):
         super().__init__(entity_manager)
         self.entity_factory = entity_factory
-        self.key_listener = KeyListener.get_instance()
+        self.key_listener = None
 
     def update(self, dt):
         entities = self.entity_manager.get_all_entities_possessing_component_of_class(ShootingComponent())

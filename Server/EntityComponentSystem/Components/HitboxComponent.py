@@ -1,5 +1,5 @@
 from EntityComponentSystem.Components.Components import Component
-from utils.Vec2d import Vec2d
+from EntityComponentSystem.Vec2d import Vec2d
 
 
 def _get_rectangle(size):

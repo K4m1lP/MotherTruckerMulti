@@ -1,36 +1,14 @@
 import pygame
-import pygame_menu
 import Network
 
-from time import time_ns as get_time, time
+from time import time_ns as get_time
 
-from RenderSystem import RenderSystem
+from Events import Events
+from Scene import LoginScene, MenuScene, WaitingScene, GameScene, AccountScene, StatsScene, HistoryScene, SettingScene
 
-menu = None
-SCR_WIDTH, SCR_HEIGHT = 1900, 1000
+SCR_WIDTH, SCR_HEIGHT = 1000, 500
 client = Network.Client()
 DISCONNECT_MSG = "!DISCONNECT"
-
-
-def login_function(menu, nick_id, password_id):
-    print(client.pos)
-    if client.pos is not None:
-        nick = pygame_menu.Menu.get_widget(menu, widget_id=nick_id).get_value()
-        password = pygame_menu.Menu.get_widget(menu, widget_id=password_id).get_value()
-        IS_LOGGED = client.login(nick, password)
-        if IS_LOGGED:
-            menu.close()
-
-
-def create_login_view(game_window):
-    menu = pygame_menu.Menu('Mother Trucker', SCR_WIDTH, SCR_HEIGHT,
-                            theme=pygame_menu.themes.THEME_DARK)
-    nick_id = menu.add.text_input('Nick :', default='').get_id()
-    password_id = menu.add.text_input('Password :', default='', password=True).get_id()
-    menu.add.button('Login', login_function, menu, nick_id, password_id)
-    menu.add.button('Quit', pygame_menu.events.EXIT)
-    menu.mainloop(game_window)
-    return menu
 
 
 if __name__ == '__main__':
@@ -41,22 +19,36 @@ if __name__ == '__main__':
     dt = 1 / 60
     end_time = 0
     start_time = get_time()
-    menu = create_login_view(game_window)
-    print("elooo")
-    if client.is_log():
-        # create world
-        render_system = RenderSystem(game_window)
-        while not should_close:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    should_close = True
-            key_pressed = pygame.key.get_pressed()
-            to_draw = client.send_obj(key_pressed)
-            if not to_draw or to_draw == DISCONNECT_MSG:
-                pass
-            render_system.update(dt, to_draw)
-            end_time = get_time()
-            dt = (end_time - start_time) * 1e-9
-            start_time = get_time()
+    current_scene = LoginScene(game_window)
+    events_manager = Events.get_instance()
+    while not should_close:
+        game_window.fill((255, 200, 255))
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                should_close = True
+        current_scene.draw(events)
+        pygame.display.update()
+        change = events_manager.get_scene_change()
+        if change:
+            if change == "menu":
+                current_scene = MenuScene(game_window)
+            if change == "waiting_scene":
+                current_scene = WaitingScene(game_window)
+            if change == "game":
+                current_scene = GameScene(game_window)
+            if change == "login":
+                current_scene = LoginScene(game_window)
+            if change == "account":
+                current_scene = AccountScene(game_window)
+            if change == "stats":
+                current_scene = StatsScene(game_window)
+            if change == "history":
+                current_scene = HistoryScene(game_window)
+            if change == "settings":
+                current_scene = SettingScene(game_window)
+        end_time = get_time()
+        dt = (end_time - start_time) * 1e-9
+        start_time = get_time()
     pygame.quit()
     quit()

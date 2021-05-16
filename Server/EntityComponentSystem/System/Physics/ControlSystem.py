@@ -5,8 +5,8 @@ from EntityComponentSystem.Components.DynamicsComponent import DynamicsComponent
 from EntityComponentSystem.Components.HitboxComponent import HitboxComponent
 from EntityComponentSystem.Components.PositionComponent import PositionComponent
 from EntityComponentSystem.System.System import System
-from Main.KeyListener import KeyListener
-from utils.Vec2d import Vec2d
+
+from EntityComponentSystem.Vec2d import Vec2d
 
 
 class ControlSystem(System):

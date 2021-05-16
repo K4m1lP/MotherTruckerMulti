@@ -34,13 +34,14 @@ class RenderSystem:
         :param data:
         :return:
         '''
-        for entity in data:
-            pos_comp = entity["PositionComponent"]
-            rend_comp = entity["RenderComponent"]
-            hb_comp = entity["HitboxComponent"]
-            if pos_comp and rend_comp:
-                self.render(pos_comp, rend_comp, hb_comp)
-        self.fps_sys.update(dt)
+        if data:
+            for entity in data:
+                pos_comp = entity["PositionComponent"]
+                rend_comp = entity["RenderComponent"]
+                hb_comp = entity["HitboxComponent"]
+                if pos_comp and rend_comp:
+                    self.render(pos_comp, rend_comp, hb_comp)
+            self.fps_sys.update(dt)
 
 
 class FpsRenderSystem:

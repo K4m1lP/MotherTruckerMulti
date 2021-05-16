@@ -20,5 +20,19 @@ def login(nick, password):
 def sing(nick, password):
     # db["User"].insert_one({"name": nick, password: code(password)})
     pass
+
+def get_account(user_id):
+    pass
+
+def get_history(user_id):
+    pass
+
+def get_stat(user_id):
+    pass
+
 if __name__ == '__main__':
     print(login("TOMIKSON","tomekjestsuper"))
+
+
+def get_stats(param):
+    return None
