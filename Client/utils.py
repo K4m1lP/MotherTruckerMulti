@@ -67,7 +67,9 @@ class GameState:
 class Sprite:
     def __init__(self, pos_comp, render_comp):
         self.pos = pos_comp.pos
-        self.orient = pos_comp.orient
         self.z = pos_comp.z
-        self.img = render_comp.img
+        self.img_name = render_comp.img_name
         self.size = render_comp.size
+        self.orient = pos_comp.orient
+        self.fixed_size = render_comp.fixed_size
+        self.fixed_orient = render_comp.fixed_orient

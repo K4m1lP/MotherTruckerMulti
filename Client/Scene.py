@@ -6,7 +6,7 @@ from time import time_ns as get_time
 from Events import Events
 from Network import Client
 
-SCR_WIDTH, SCR_HEIGHT = 1000, 500
+from settings import SCR_HEIGHT, SCR_WIDTH
 
 
 class Scene:
@@ -23,7 +23,7 @@ class GameScene(Scene):
         self.game_keys = [pygame.K_a, pygame.K_d, pygame.K_a, pygame.K_s, pygame.K_SPACE,
                           pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT,
                           pygame.K_KP0, pygame.K_KP1, pygame.K_f, pygame.K_w, pygame.K_ESCAPE,
-                          pygame.K_TAB]
+                          pygame.K_TAB, pygame.K_e]
         self.prev_pressed_keys = {}
         for key in self.game_keys:
             self.prev_pressed_keys[key] = False
@@ -31,6 +31,7 @@ class GameScene(Scene):
         for key in self.game_keys:
             self.pressed_keys[key] = False
         self.obj = None
+        self.images = {}
         self.does_menu = False
         self.menu = pygame_menu.Menu(title="Game menu", height=250, width=500, theme=pygame_menu.themes.THEME_DARK)
         self.menu.add.button("Quit", exit_fun, self.events)
@@ -90,15 +91,18 @@ class GameScene(Scene):
             for sprite in to_render:
                 x = sprite.pos.x
                 y = sprite.pos.y
-                # don't show objects that are outside camera view
-                if not (-100 <= x <= SCR_WIDTH + 100 and -100 <= y <= SCR_HEIGHT + 100):
-                    return
-                image_name = sprite.img
-                image = pygame.image.load(os.path.join('assets/images/textures/', image_name))
-                size = sprite.size
-                angle = sprite.orient.get_angle()
-                # scale and rotate image
-                image = pygame.transform.rotate(pygame.transform.scale(image, size), angle)
+                # if new, save to ram not to access disc every frame
+                image_name = sprite.img_name
+                if image_name not in self.images:
+                    self.images[image_name] = pygame.image.load(os.path.join('assets/images/textures/', image_name))
+                    if sprite.size and sprite.fixed_size:
+                        self.images[image_name] = pygame.transform.scale(self.images[image_name], sprite.size)
+
+                image = self.images[image_name]
+                if sprite.size and not sprite.fixed_size:
+                    image = pygame.transform.scale(image, sprite.size)
+                if not sprite.fixed_orient:
+                    image = pygame.transform.rotate(image, sprite.orient.get_angle())
                 # render
                 render_pos = (int(x - image.get_width() / 2), int(y - image.get_height() / 2))
                 self.window.blit(image, render_pos)

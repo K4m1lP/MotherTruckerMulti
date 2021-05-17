@@ -1,4 +1,5 @@
 import math
+import os
 import random
 from copy import deepcopy
 from math import cos, sin, inf
@@ -7,14 +8,16 @@ from time import time_ns as get_time
 import pygame
 
 from engine.components import *
+from engine.entities import Collision, CollisionManager
 from utils import GameState, Sprite
 
 
 class PhysicsSystem:
-    def __init__(self, entity_manager):
+    def __init__(self, entity_manager, entity_factory):
         self.entity_manager = entity_manager
         self.integrating_sys = IntegratingSystem(entity_manager)
-        self.collision_sys = CollisionSystem(entity_manager)
+        self.collision_det_sys = CollisionDetectionSystem(entity_manager)
+        self.collision_res_sys = CollisionResolveSystem(entity_manager, entity_factory)
         self.control_sys = ControlSystem(entity_manager)
         self.resistances_sys = ResistancesSystem(entity_manager)
         self.hitbox_sys = HitboxSystem(entity_manager)
@@ -23,7 +26,8 @@ class PhysicsSystem:
         self.hitbox_sys.update(dt)
 
         # force generating systems
-        self.collision_sys.update(dt)
+        self.collision_det_sys.update(dt)
+        self.collision_res_sys.update(dt)
 
         self.control_sys.update(dt)
 
@@ -39,7 +43,7 @@ class IntegratingSystem:
         self.tolerance = 2
 
     def update(self, dt):
-        entities = self.entity_manager.get_entities_with_comp(DynamicsComponent())
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(DynamicsComponent())
         for entity in entities:
             dynamics_comp = self.entity_manager.get_component_of_class(DynamicsComponent(), entity)
             pos_comp = self.entity_manager.get_component_of_class(PositionComponent(), entity)
@@ -66,7 +70,7 @@ class ControlSystem:
         self.entity_manager = entity_manager
 
     def update(self, dt):
-        entities = self.entity_manager.get_entities_with_comp(DynamicsComponent())
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(DynamicsComponent())
 
         for entity in entities:
 
@@ -111,7 +115,7 @@ class HitboxSystem:
         self.entity_manager = entity_manager
 
     def update(self, dt):
-        entities = self.entity_manager.get_entities_with_comp(HitboxComponent())
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(HitboxComponent())
 
         for entity in entities:
             hb_comp = self.entity_manager.get_component_of_class(HitboxComponent(), entity)
@@ -129,9 +133,10 @@ class HitboxSystem:
                 hb_comp.is_dirty = False
 
 
-class CollisionSystem:
+class CollisionDetectionSystem:
     def __init__(self, entity_manager):
         self.entity_manager = entity_manager
+        self.collision_manager = CollisionManager.get_instance()
 
     def _test_sat(self, ent1, ent2):
         hb = [self.entity_manager.get_component_of_class(HitboxComponent(), ent1),
@@ -188,9 +193,6 @@ class CollisionSystem:
               self.entity_manager.get_component_of_class(HitboxComponent(), ent2)]
         pos = [self.entity_manager.get_component_of_class(PositionComponent(), ent1),
                self.entity_manager.get_component_of_class(PositionComponent(), ent2)]
-        dyn = [self.entity_manager.get_component_of_class(DynamicsComponent(), ent1),
-               self.entity_manager.get_component_of_class(DynamicsComponent(), ent2)]
-        inv_masses = [dyn[0].inverse_mass, dyn[1].inverse_mass]
         centers = [pos[0].pos, pos[1].pos]
         polys = [hb[0].transformed_vertices, hb[1].transformed_vertices]
 
@@ -198,9 +200,6 @@ class CollisionSystem:
             poly1 = deepcopy(polys[p])
             poly2 = deepcopy(polys[(p + 1) % 2])
             pos1 = centers[p]
-            inv_mass1 = inv_masses[p]
-            inv_mass2 = inv_masses[(p + 1) % 2]
-
             # how much one polygon penetrated the other one
             pen = Vec2d(0, 0)
 
@@ -224,18 +223,13 @@ class CollisionSystem:
                         pen.y += (1 - t1) * (d2.y - d1.y)
 
             if pen.length() > 0:
-                if inv_mass1 > inv_mass2:  # first is lighter
-                    pos[p].pos = pos[p].pos.add(pen.scale(-1))
-                    hb[p].is_dirty = True
-                elif inv_mass2 > 0:
-                    pos[(p + 1) % 2].pos = pos[(p + 1) % 2].pos.add(pen)
-                    hb[(p + 1) % 2].is_dirty = True
+                self.collision_manager.add_collision(Collision(ent1, ent2, pen.length(), pen))
                 return True
 
             return False
 
     def update(self, dt):
-        entities = self.entity_manager.get_entities_with_comp(HitboxComponent())
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(HitboxComponent())
         for ent in entities:
             hb_comp = self.entity_manager.get_component_of_class(HitboxComponent(), ent)
             hb_comp.overlap = False
@@ -251,6 +245,93 @@ class CollisionSystem:
                     hb_comp2.overlap = True
 
 
+class CollisionResolveSystem:
+    def __init__(self, entity_manager, entity_factory):
+        self.entity_manager = entity_manager
+        self.entity_factory = entity_factory
+        self.collision_manager = CollisionManager.get_instance()
+        # self.hit_sound = pygame.mixer.Sound(os.path.join('assets/sounds/', 'hit.mp3'))
+        # self.hit_sound.set_volume(0.3)
+
+    def update(self, dt):
+        collisions = self.collision_manager.get_collisions()
+
+        for col in collisions:
+            ent1 = col.ent1
+            ent2 = col.ent2
+            hit_comp1 = self.entity_manager.get_component_of_class(HitComponent(), ent1)
+            hit_comp2 = self.entity_manager.get_component_of_class(HitComponent(), ent2)
+            health_comp1 = self.entity_manager.get_component_of_class(HealthComponent(), ent1)
+            health_comp2 = self.entity_manager.get_component_of_class(HealthComponent(), ent2)
+            pos_comp1 = self.entity_manager.get_component_of_class(PositionComponent(), ent1)
+            pos_comp2 = self.entity_manager.get_component_of_class(PositionComponent(), ent2)
+
+            # 1) CHECK FOR HITTING AND EXPLODING
+            # I assume that entity can't have both HitComp and HealthComp
+            if hit_comp1 and health_comp1:
+                raise Exception("Entity {} has both hit and health component!".format(ent1))
+
+            if hit_comp2 and health_comp2:
+                raise Exception("Entity {} has both hit and health component!".format(ent2))
+
+            # check 1 against 2
+            if hit_comp1:
+                if (get_time() - hit_comp1.time_placed) > hit_comp1.activation_time:
+                    dmg = hit_comp1.dmg
+                    # ent1 is exploding
+                    self.entity_factory.create_explosion(pos_comp1.pos)
+                    # pygame.mixer.Sound.play(self.hit_sound)
+                    self.entity_manager.remove_entity(ent1)
+                    if health_comp2:
+                        health_comp2.last_time_hit = get_time()
+                        # ent2 has health, so it is being hit and loses health
+                        if health_comp2.curr_hp - dmg <= 0:
+                            health_comp2.curr_hp = 0
+                            self.entity_factory.create_explosion(pos_comp2.pos, (200, 200))
+                            # pygame.mixer.Sound.play(self.hit_sound)
+                            # pygame.mixer.Sound.play(self.hit_sound)
+                            # pygame.mixer.Sound.play(self.hit_sound)
+                            self.entity_manager.remove_entity(ent2)
+                        else:
+                            health_comp2.curr_hp -= dmg
+                continue
+            # check 2 against 1
+            if hit_comp2:
+                if (get_time() - hit_comp2.time_placed) > hit_comp2.activation_time:
+                    dmg = hit_comp2.dmg
+                    # ent2 is exploding
+                    self.entity_factory.create_explosion(pos_comp2.pos)
+                    # pygame.mixer.Sound.play(self.hit_sound)
+                    self.entity_manager.remove_entity(ent2)
+                    if health_comp1:
+                        health_comp1.last_time_hit = get_time()
+                        # ent1 has health, so it is being hit and loses health
+                        if health_comp1.curr_hp - dmg <= 0:
+                            health_comp1.curr_hp = 0
+                            self.entity_factory.create_explosion(pos_comp1.pos, (200, 200))
+                            # pygame.mixer.Sound.play(self.hit_sound)
+                            # pygame.mixer.Sound.play(self.hit_sound)
+                            # pygame.mixer.Sound.play(self.hit_sound)
+                            self.entity_manager.remove_entity(ent1)
+                        else:
+                            health_comp1.curr_hp -= dmg
+                continue
+
+            # 2) CHECK FOR DISPLACING
+            dyn_comp1 = self.entity_manager.get_component_of_class(DynamicsComponent(), ent1)
+            dyn_comp2 = self.entity_manager.get_component_of_class(DynamicsComponent(), ent2)
+            hb_comp1 = self.entity_manager.get_component_of_class(HitboxComponent(), ent1)
+            hb_comp2 = self.entity_manager.get_component_of_class(HitboxComponent(), ent2)
+
+            if dyn_comp1 and dyn_comp2 and hb_comp1 and hb_comp2 and pos_comp1 and pos_comp2:
+                if dyn_comp1.inverse_mass > dyn_comp2.inverse_mass:  # first is lighter
+                    pos_comp1.pos = pos_comp1.pos.add(col.pen_vec.scale(-1))
+                    hb_comp1.is_dirty = True
+                elif dyn_comp2.inverse_mass > 0:
+                    pos_comp2.pos = pos_comp2.pos.add(col.pen_vec)
+                    hb_comp2.is_dirty = True
+
+
 class ResistancesSystem:
     def __init__(self, entity_manager):
         self.entity_manager = entity_manager
@@ -258,7 +339,7 @@ class ResistancesSystem:
         self.ground_friction = 60
 
     def update(self, dt):
-        entities = self.entity_manager.get_entities_with_comp(DynamicsComponent())
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(DynamicsComponent())
 
         for entity in entities:
 
@@ -280,13 +361,15 @@ class ResistancesSystem:
                 dynamics_comp.force = dynamics_comp.force.add(friction_force)
 
 
-class ShootingSystem:
+class WeaponSystem:
     def __init__(self, entity_manager, entity_factory):
-        self.entity_factory = entity_factory
         self.entity_manager = entity_manager
+        self.entity_factory = entity_factory
+        # self.shot_sound = pygame.mixer.Sound(os.path.join('assets/sounds/', 'shot.mp3'))
+        # self.shot_sound.set_volume(0.2)
 
     def update(self, dt):
-        entities = self.entity_manager.get_entities_with_comp(ShootingComponent())
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(ShootingComponent())
 
         for entity in entities:
             shot_comp = self.entity_manager.get_component_of_class(ShootingComponent(), entity)
@@ -294,8 +377,8 @@ class ShootingSystem:
             dyn_comp = self.entity_manager.get_component_of_class(DynamicsComponent(), entity)
             con_comp = self.entity_manager.get_component_of_class(ControlComponent(), entity)
 
-            if pos_comp and dyn_comp:
-                if con_comp.player.keys and con_comp.player.keys[pygame.K_SPACE]:
+            if pos_comp and dyn_comp and con_comp and con_comp.player.keys:
+                if con_comp.player.keys[pygame.K_SPACE]:
                     time_since_last_shot = (get_time() * 1e-9) - shot_comp.last_time_shot
                     if time_since_last_shot > shot_comp.reload_time:
                         # inaccuracy mechanism
@@ -304,18 +387,54 @@ class ShootingSystem:
                             max_angle = 2 / (math.pi * 2)
                             shot_angle = (random.random() * max_angle) - (max_angle / 2)
                         bullet_orient = pos_comp.orient.rotate(shot_angle)
-                        self.entity_factory.create_bullet(pos_comp.pos.add(pos_comp.orient.scale(95)),
-                                                          bullet_orient,
-                                                          shot_comp.bullet_speed)
+                        self.entity_factory.create_bullet(pos_comp.pos.add(pos_comp.orient.scale(95)), bullet_orient,
+                                                          shot_comp.bullet_speed, entity)
+                        # pygame.mixer.Sound.play(self.shot_sound)
                         shot_comp.last_time_shot = get_time() * 1e-9
 
+                if con_comp.player.keys[pygame.K_f]:
+                    time_since_last_mine = (get_time() * 1e-9) - shot_comp.last_time_mine
+                    if time_since_last_mine > shot_comp.reload_mine_time:
+                        self.entity_factory.create_mine(pos_comp.pos, entity)
+                        # pygame.mixer.Sound.play(self.shot_sound)
+                        shot_comp.last_time_mine = get_time() * 1e-9
 
+
+class AnimationSystem:
+    def __init__(self, entity_manager):
+        self.entity_manager = entity_manager
+
+    def update(self, dt):
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(AnimationComponent())
+
+        for ent in entities:
+            anim_comp = self.entity_manager.get_component_of_class(AnimationComponent(), ent)
+            rend_comp = self.entity_manager.get_component_of_class(RenderComponent(), ent)
+
+            if anim_comp:
+                if anim_comp and rend_comp:
+                    # if it's time to change texture:
+                    if (get_time() - anim_comp.last_time_changed) > anim_comp.change_time:
+                        anim_comp.last_time_changed = get_time()
+                        # take next img of animation
+                        anim_comp.curr_img_idx += 1
+                        # if we run out of imgs delete entity totally
+                        if anim_comp.curr_img_idx == anim_comp.img_num:
+                            self.entity_manager.remove_entity(ent)
+                            break
+                        # else change render component img
+                        else:
+                            rend_comp.img_name = anim_comp.img_name + '{}'.format(anim_comp.curr_img_idx) + '.png'
+                            rend_comp.ready = True
+
+
+# multiplayer...
 class KeysUpdateSystem:
     def __init__(self, entity_manager):
         self.entity_manager = entity_manager
 
     def update(self, keys1, keys2):
-        entities = self.entity_manager.get_entities_with_comp(ControlComponent())
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(ControlComponent())
 
         for ent in entities:
             control_comp = self.entity_manager.get_component_of_class(ControlComponent(), ent)
@@ -336,7 +455,7 @@ class GameStateSystem:
     def get_state(self, dt):
         # update objects to render
         self.state.to_render = []
-        entities = self.entity_manager.get_entities_with_comp(RenderComponent())
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(RenderComponent())
         for ent in entities:
             rend_comp = self.entity_manager.get_component_of_class(RenderComponent(), ent)
             pos_comp = self.entity_manager.get_component_of_class(PositionComponent(), ent)

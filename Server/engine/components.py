@@ -1,9 +1,12 @@
 from utils import Vec2d
+from time import time_ns as get_time
 
 
 class RenderComponent:
-    def __init__(self, img='', size=(10, 10)):
-        self.img = img
+    def __init__(self, img_name=None, size=None, fixed_orient=False, fixed_size=False):
+        self.img_name = img_name
+        self.fixed_size = fixed_size
+        self.fixed_orient = fixed_orient
         self.size = size
 
 
@@ -15,10 +18,12 @@ class PositionComponent:
 
 
 class ShootingComponent:
-    def __init__(self, reload_time=1.5, bullet_speed=1000):
+    def __init__(self, reload_time=0.5, bullet_speed=700, reload_mine_time=1):
         self.reload_time = reload_time  # in seconds
+        self.reload_mine_time = reload_mine_time
         self.bullet_speed = bullet_speed  # initial bullet speed
         self.last_time_shot = 0
+        self.last_time_mine = 0
 
 
 class ControlComponent:
@@ -39,10 +44,10 @@ class DynamicsComponent:
 
 
 class HealthComponent:
-    def __init__(self, cur_hp=0, max_hp=100):
-        self.cur_hp = cur_hp
+    def __init__(self, curr_hp=1000, max_hp=1000):
+        self.curr_hp = curr_hp
         self.max_hp = max_hp
-        self.alive = True
+        self.last_time_hit = 0
 
 
 class HitboxComponent:
@@ -57,5 +62,22 @@ class HitboxComponent:
         self.is_dirty = True
         self.r_squared = (size[0] / 2) ** 2 + (size[1] / 2) ** 2
 
+
+class AnimationComponent:
+    def __init__(self, img_num=1, img_name='explosion'):
+        self.img_name = img_name
+        self.img_num = img_num
+        self.curr_img_idx = -1
+        self.entire_time = 0.4 * 1e9
+        self.change_time = self.entire_time / self.img_num
+        self.last_time_changed = 0
+
+
+class HitComponent:
+    def __init__(self, dmg=100, owner_id=None, activ_time=0):
+        self.time_placed = get_time()
+        self.activation_time = activ_time
+        self.dmg = dmg
+        self.owner_id = owner_id
 
 

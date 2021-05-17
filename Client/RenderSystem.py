@@ -1,6 +1,6 @@
 import pygame
+from settings import SCR_HEIGHT, SCR_WIDTH
 
-SCR_WIDTH, SCR_HEIGHT = 1900, 1000
 RED = 255, 0, 0
 YELLOW = 255, 255, 0
 
@@ -17,7 +17,7 @@ class RenderSystem:
         # don't show objects that are outside camera view
         if not (-100 <= x <= SCR_WIDTH + 100 and -100 <= y <= SCR_HEIGHT + 100):
             return
-        image = rend_comp.img
+        image = rend_comp.img_name
         size = rend_comp.size
         angle = pos_comp.orient.get_angle()
 

@@ -6,7 +6,7 @@ from time import time_ns as get_time
 from Events import Events
 from Scene import LoginScene, MenuScene, WaitingScene, GameScene, AccountScene, StatsScene, HistoryScene, SettingScene
 
-SCR_WIDTH, SCR_HEIGHT = 1000, 500
+from settings import SCR_HEIGHT, SCR_WIDTH
 client = Network.Client()
 DISCONNECT_MSG = "!DISCONNECT"
 
@@ -29,6 +29,7 @@ if __name__ == '__main__':
                 client.close_connection()
                 should_close = True
         current_scene.draw(events)
+        print("FPS: {}".format(1 / dt))
         pygame.display.update()
         change = events_manager.get_scene_change()
         if change:

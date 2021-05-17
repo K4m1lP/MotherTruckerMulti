@@ -1,5 +1,5 @@
 from engine.entities import EntityManager, EntityFactory
-from engine.systems import PhysicsSystem, ShootingSystem, KeysUpdateSystem, GameStateSystem
+from engine.systems import PhysicsSystem, WeaponSystem, KeysUpdateSystem, GameStateSystem, AnimationSystem
 from settings import *
 
 
@@ -12,8 +12,9 @@ class GameEngine:
         self.player2 = player2
         # systems:
         self.keys_sys = KeysUpdateSystem(self.entity_manager)
-        self.ph_sys = PhysicsSystem(self.entity_manager)
-        self.sht_sys = ShootingSystem(self.entity_manager, self.entity_factory)
+        self.ph_sys = PhysicsSystem(self.entity_manager, self.entity_factory)
+        self.wpn_sys = WeaponSystem(self.entity_manager, self.entity_factory)
+        self.anim_sys = AnimationSystem(self.entity_manager)
         self.state_sys = GameStateSystem(self.entity_manager)
 
         # some start game objects
@@ -26,8 +27,9 @@ class GameEngine:
             self.player2.keys = keys2
         self.keys_sys.update(self.player1.keys, self.player2.keys)
         self.ph_sys.update(dt)
-        self.sht_sys.update(dt)
-
+        self.wpn_sys.update(dt)
+        self.anim_sys.update(dt)
+        print("FPS: {}".format(1 / dt))
         return self.state_sys.get_state(dt)
 
     def initialize(self):

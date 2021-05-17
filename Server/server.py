@@ -18,7 +18,7 @@ HEADER = 10
 CONNECTED_PEOPLE = []
 WANT_TO_PLAY = [False, False]
 THREADS = []
-PER = 5
+PER = 1
 DB = DBManager
 game_state = None
 
@@ -116,7 +116,6 @@ def game():
                 keys[i] = recv_data_on_open_socket(CONNECTED_PEOPLE[i])
             except socket.error as er:
                 keys[i] = None
-                print("ERROR: ", er)
         game_state = engine.update(dt, keys[0], keys[1])
         if index % PER == 0:
             index = 0
