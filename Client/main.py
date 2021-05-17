@@ -25,7 +25,8 @@ if __name__ == '__main__':
         game_window.fill((255, 200, 255))
         events = pygame.event.get()
         for event in events:
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or events_manager.exit_event:
+                client.close_connection()
                 should_close = True
         current_scene.draw(events)
         pygame.display.update()
@@ -50,5 +51,6 @@ if __name__ == '__main__':
         end_time = get_time()
         dt = (end_time - start_time) * 1e-9
         start_time = get_time()
+    pygame.display.quit()
     pygame.quit()
     quit()

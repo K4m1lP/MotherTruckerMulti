@@ -1,10 +1,11 @@
 import socket
 import pickle
+import sys
 
 IS_LOGGED = False
 SERVER = "127.0.0.1"
 PORT = 2345
-HEADER = 64
+HEADER = 10
 
 __instance = None
 
@@ -57,23 +58,42 @@ class Client:
                 self.USER_ID = user_id_str
                 return user_id_str
 
+    def recv_data_on_open_socket(self):
+        result = None
+        full_msg = b''
+        new_msg = True
+        flag = False
+        while not flag:
+            msg = self.client.recv(16)
+            if new_msg:
+                msglen = int(msg[:HEADER])
+                new_msg = False
+            full_msg += msg
+            if len(full_msg) - HEADER == msglen:
+                result = pickle.loads(full_msg[HEADER:])
+                flag = True
+                new_msg = True
+                full_msg = b""
+        return result
+
+    def send_data_on_open_socket(self, data):
+        msg = pickle.dumps(data)
+        msg = bytes(f"{len(msg):<{HEADER}}", 'utf-8') + msg
+        self.client.send(msg)
+
     def send_key(self, data_key):
-        self.send_obj({"TYPE": "KEYS"})
-        self.send_obj(data_key)
-        msg = pickle.loads(self.client.recv(2048))
-        if isinstance(msg, dict) and "TYPE" in msg.keys():
-            return None
-        else:
-            return msg
+        self.send_data_on_open_socket(data_key)
 
     def is_log(self):
         return self.USER_ID
 
     def is_second_connected(self):
-        self.send_obj({"TYPE": "SECOND_PLAYER"})
-        self.send_obj({"TYPE": "SECOND_PLAYER"})
-        msg = pickle.loads(self.client.recv(2048))
-        return msg["RES"]
+        try:
+            msg = self.recv_data_on_open_socket()
+        except socket.error as e:
+            return None
+        else:
+            return msg["RES"]
 
     def i_want_to_play(self):
         self.send_obj({"TYPE": "WANT_PLAY"})
@@ -96,3 +116,20 @@ class Client:
         self.send_obj({"TYPE": "STAT_ASK"})
         self.send_obj({"USER_ID": self.USER_ID})
         return pickle.loads(self.client.recv(2048))
+
+    def get_game_status(self):
+        try:
+            msg1 = self.recv_data_on_open_socket()
+        except socket.error as e:
+            return None
+        else:
+            return msg1
+
+    def block_socket(self):
+        self.client.setblocking(True)
+
+    def unlock_socket(self):
+        self.client.setblocking(False)
+
+    def close_connection(self):
+        print("we should do some exit stuff here, we are in network exit callback")

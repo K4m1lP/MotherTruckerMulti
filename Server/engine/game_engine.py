@@ -20,10 +20,11 @@ class GameEngine:
         self.initialize()
 
     def update(self, dt, keys1, keys2):
-        if keys1 and keys2:
+        if keys1:
             self.player1.keys = keys1
+        if keys2:
             self.player2.keys = keys2
-            self.keys_sys.update(self.player1.keys, self.player2.keys)
+        self.keys_sys.update(self.player1.keys, self.player2.keys)
         self.ph_sys.update(dt)
         self.sht_sys.update(dt)
 

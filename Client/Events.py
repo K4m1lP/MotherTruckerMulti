@@ -13,6 +13,7 @@ class Events:
         else:
             Events.__instance = self
         self.scene_events = []
+        self.exit_event = False
 
     def add_scene_change(self, scene):
         self.scene_events.append(scene)

@@ -275,7 +275,7 @@ class ResistancesSystem:
             dynamics_comp.force = dynamics_comp.force.add(drag_force)
 
             # ground friction
-            if pos_comp.z == 0:  # if touches the ground
+            if pos_comp.z <= 1:  # if touches the ground
                 friction_force = vel.scale((-1) * self.ground_friction)
                 dynamics_comp.force = dynamics_comp.force.add(friction_force)
 

@@ -1,8 +1,5 @@
 from math import sqrt, sin, cos, atan2, pi
 
-import pygame
-
-
 class Vec2d:
     def __init__(self, x=0., y=0.):
         self.x = x

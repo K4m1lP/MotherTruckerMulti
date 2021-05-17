@@ -88,7 +88,7 @@ class EntityFactory:
         size = 150, 70
         entity = self._entity_manager.create_entity("czolg")
         self._entity_manager.add_component(DynamicsComponent(mass=10), entity)
-        self._entity_manager.add_component(PositionComponent(pos=Vec2d(pos[0], pos[1])), entity)
+        self._entity_manager.add_component(PositionComponent(pos=Vec2d(pos[0], pos[1]), z=1), entity)
         self._entity_manager.add_component(RenderComponent('tank{}.png'.format(texture_id), size), entity)
         self._entity_manager.add_component(ShootingComponent(), entity)
         self._entity_manager.add_component(HitboxComponent(size), entity)
@@ -102,13 +102,13 @@ class EntityFactory:
         pos = Vec2d(SCR_WIDTH / 2, SCR_HEIGHT / 2)
         size = SCR_WIDTH, SCR_HEIGHT
         entity = self._entity_manager.create_entity("tło")
-        self._entity_manager.add_component(PositionComponent(pos=pos), entity)
+        self._entity_manager.add_component(PositionComponent(pos=pos, z=0), entity)
         self._entity_manager.add_component(RenderComponent('background.png', size), entity)
 
     def create_bullet(self, pos, orient, speed):
         size = 37, 13
         entity = self._entity_manager.create_entity("pocisk")
-        self._entity_manager.add_component(PositionComponent(pos=pos, orient=orient, z=1), entity)
+        self._entity_manager.add_component(PositionComponent(pos=pos, orient=orient, z=2), entity)
         self._entity_manager.add_component(DynamicsComponent(vel=orient.scale(speed), mass=1), entity)
         self._entity_manager.add_component(RenderComponent('bullet.png', size), entity)
         self._entity_manager.add_component(HitboxComponent(size), entity)
@@ -118,7 +118,7 @@ class EntityFactory:
         # ---------------------- LEWA SCIANA --------------
         vert_wall_size = WALL_THICKNESS, SCR_HEIGHT
         entity = self._entity_manager.create_entity("sciana lewa")
-        self._entity_manager.add_component(PositionComponent(pos=Vec2d(WALL_THICKNESS / 2, SCR_HEIGHT / 2)), entity)
+        self._entity_manager.add_component(PositionComponent(pos=Vec2d(WALL_THICKNESS / 2, SCR_HEIGHT / 2), z=1), entity)
         self._entity_manager.add_component(DynamicsComponent(), entity)
         self._entity_manager.add_component(RenderComponent('vert_wall.png', vert_wall_size), entity)
         self._entity_manager.add_component(HitboxComponent(vert_wall_size), entity)
@@ -126,7 +126,7 @@ class EntityFactory:
         # ---------------------- PRAWA SCIANA --------------
         entity = self._entity_manager.create_entity("sciana prawa")
         self._entity_manager.add_component(
-            PositionComponent(pos=Vec2d(SCR_WIDTH - (WALL_THICKNESS / 2), SCR_HEIGHT / 2)), entity)
+            PositionComponent(pos=Vec2d(SCR_WIDTH - (WALL_THICKNESS / 2), SCR_HEIGHT / 2), z=1), entity)
         self._entity_manager.add_component(DynamicsComponent(), entity)
         self._entity_manager.add_component(RenderComponent('vert_wall.png', vert_wall_size), entity)
         self._entity_manager.add_component(HitboxComponent(vert_wall_size), entity)
@@ -134,7 +134,7 @@ class EntityFactory:
         # ---------------------- GORNA SCIANA --------------
         horiz_wall_size = SCR_WIDTH, WALL_THICKNESS
         entity = self._entity_manager.create_entity("sciana gorna")
-        self._entity_manager.add_component(PositionComponent(pos=Vec2d(SCR_WIDTH / 2, WALL_THICKNESS / 2)), entity)
+        self._entity_manager.add_component(PositionComponent(pos=Vec2d(SCR_WIDTH / 2, WALL_THICKNESS / 2), z=1), entity)
         self._entity_manager.add_component(DynamicsComponent(), entity)
         self._entity_manager.add_component(RenderComponent('horiz_wall.png', horiz_wall_size), entity)
         self._entity_manager.add_component(HitboxComponent(horiz_wall_size), entity)
@@ -142,7 +142,7 @@ class EntityFactory:
         # ---------------------- DOLNA SCIANA --------------
         entity = self._entity_manager.create_entity("sciana dolna")
         self._entity_manager.add_component(
-            PositionComponent(pos=Vec2d(SCR_WIDTH / 2, SCR_HEIGHT - (WALL_THICKNESS / 2))), entity)
+            PositionComponent(pos=Vec2d(SCR_WIDTH / 2, SCR_HEIGHT - (WALL_THICKNESS / 2)), z=1), entity)
         self._entity_manager.add_component(DynamicsComponent(), entity)
         self._entity_manager.add_component(RenderComponent('horiz_wall.png', horiz_wall_size), entity)
         self._entity_manager.add_component(HitboxComponent(horiz_wall_size), entity)
