@@ -46,6 +46,10 @@ class EntityManager:
             self._components[comp.__class__.__name__] = {}
         self._components[comp.__class__.__name__][entity_int] = comp
 
+    def delete_component(self, comp, entity_int):
+        self._components[comp.__class__.__name__][entity_int] = None
+
+
     def get_component_of_class(self, comp, entity):
         if comp.__class__.__name__ in self._components and entity in self._components[comp.__class__.__name__]:
             return self._components[comp.__class__.__name__][entity]
@@ -64,7 +68,7 @@ class EntityFactory:
 
     def create_tank(self, texture_id, pos):
         if not (texture_id == 0 or texture_id == 1):
-            print("Error: Entity factory: create_tank: Wrong texture id, can be 0 or 1")
+            print("Error: Entity factory: create_tank: Wrong texture id ({}), can be 0 or 1".format(texture_id))
             exit(1)
         size = 150, 70
         entity = self._entity_manager.create_entity("czolg")

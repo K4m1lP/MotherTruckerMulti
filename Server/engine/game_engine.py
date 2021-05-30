@@ -29,7 +29,7 @@ class GameEngine:
         self.ph_sys.update(dt)
         self.wpn_sys.update(dt)
         self.anim_sys.update(dt)
-        print("FPS: {}".format(1 / dt))
+        # print("FPS: {}".format(1 / dt))
         return self.state_sys.get_state(dt)
 
     def initialize(self):

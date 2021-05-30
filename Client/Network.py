@@ -1,9 +1,7 @@
 import socket
 import pickle
-import sys
 
 IS_LOGGED = False
-SERVER = "127.0.0.1"
 PORT = 2345
 HEADER = 10
 
@@ -25,19 +23,28 @@ class Client:
         else:
             Client.__instance = self
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.addr = (SERVER, PORT)
-        self.pos = self.connect()
+        self.addr = None
+        self.pos = None
         self.USER_ID = None
 
     def get_pos(self):
         return self.pos
 
-    def connect(self):
+    def get_nick(self):
+        self.send_obj({"TYPE": "NICK_ASK"})
+        self.send_obj({"TYPE": "NICK_ASK"})
+        user_nick = pickle.loads(self.client.recv(2048))
+        if user_nick:
+            return str(user_nick)
+
+    def connect(self, ip):
         try:
-            self.client.connect(self.addr)
-            return pickle.loads(self.client.recv(2048))
+            addr = (ip, PORT)
+            self.client.connect(addr)
+            self.addr = addr
+            self.pos = pickle.loads(self.client.recv(2048))
         except:
-            pass
+            print("Nie polaczono")
 
     def is_connected(self):
         return self.pos
@@ -47,6 +54,7 @@ class Client:
             self.client.send(pickle.dumps(data))
         except socket.error as e:
             print(e)
+            pass
 
     def login(self, nick, password):
         self.send_obj({"TYPE": "LOGIN"})
@@ -72,7 +80,6 @@ class Client:
             if len(full_msg) - HEADER == msglen:
                 result = pickle.loads(full_msg[HEADER:])
                 flag = True
-                new_msg = True
                 full_msg = b""
         return result
 
@@ -88,33 +95,32 @@ class Client:
         return self.USER_ID
 
     def is_second_connected(self):
+        print("Sprawdzam czy drugi chce grac")
         try:
             msg = self.recv_data_on_open_socket()
         except socket.error as e:
+            # print(e)
             return None
         else:
+            print(msg["RES"])
             return msg["RES"]
 
     def i_want_to_play(self):
         self.send_obj({"TYPE": "WANT_PLAY"})
         self.send_obj({"TYPE": "WANT_PLAY"})
+        self.unlock_socket()
 
     def logout(self):
         self.USER_ID = None
 
     def get_history(self):
         self.send_obj({"TYPE": "HISTORY_ASK"})
-        self.send_obj({"USER_ID": self.USER_ID})
-        return pickle.loads(self.client.recv(2048))
-
-    def get_account(self):
-        self.send_obj({"TYPE": "ACCOUNT_ASK"})
-        self.send_obj({"USER_ID": self.USER_ID})
+        self.send_obj({"TYPE": "HISTORY_ASK"})
         return pickle.loads(self.client.recv(2048))
 
     def get_stats(self):
         self.send_obj({"TYPE": "STAT_ASK"})
-        self.send_obj({"USER_ID": self.USER_ID})
+        self.send_obj({"TYPE": "STAT_ASK"})
         return pickle.loads(self.client.recv(2048))
 
     def get_game_status(self):
@@ -133,3 +139,17 @@ class Client:
 
     def close_connection(self):
         print("we should do some exit stuff here, we are in network exit callback")
+
+    def change_password(self, nick, password, new_nick, new_password):
+        if not nick or not password:
+            return False
+        if not new_nick:
+            new_nick = None
+        if not new_password:
+            new_password = None
+        if new_nick is None and new_password is None:
+            return False
+        self.send_obj({"TYPE": "CHANGE_PASS"})
+        self.send_obj({"old_nick": nick, "old_pass": password, "new_nick": new_nick, "new_pass": new_password})
+        return pickle.loads(self.client.recv(2048))
+

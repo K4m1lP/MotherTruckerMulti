@@ -53,6 +53,8 @@ class Player:
         self.keys = None
         self.id = Player.__next_free_idx
         Player.__next_free_idx += 1
+        Player.__next_free_idx %= 2
+
 
 
 class GameState:
@@ -61,6 +63,7 @@ class GameState:
         self.has_ended = False
         self.winner = None
         self.frame_time = None
+        self.should_exit = False
 
 
 class Sprite:

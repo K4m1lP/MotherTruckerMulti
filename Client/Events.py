@@ -13,6 +13,7 @@ class Events:
         else:
             Events.__instance = self
         self.scene_events = []
+        self.winner = None
         self.exit_event = False
 
     def add_scene_change(self, scene):
@@ -22,3 +23,11 @@ class Events:
         if len(self.scene_events) > 0:
             return self.scene_events.pop()
         return None
+
+    def set_winner(self, winner):
+        self.winner = winner
+
+    def get_winner(self):
+        res = self.winner
+        self.winner = None
+        return res

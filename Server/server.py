@@ -4,7 +4,10 @@ import DBManager
 import pickle
 import time
 from time import time_ns as get_time
+
+import MockDB
 from engine.game_engine import GameEngine
+from settings import DATA_BASE
 from utils import Player
 import ctypes
 
@@ -18,8 +21,11 @@ HEADER = 10
 CONNECTED_PEOPLE = []
 WANT_TO_PLAY = [False, False]
 THREADS = []
-PER = 1
-DB = DBManager
+PER = 10
+if DATA_BASE:
+    DB = DBManager
+else:
+    DB = MockDB
 game_state = None
 
 try:
@@ -63,30 +69,32 @@ def threaded_client(conn, current_player):
     global game_state
     global WANT_TO_PLAY
     global CONNECTED_PEOPLE
-
-    conn.send(pickle.dumps("Connected"))
-    print("New connection")
-    CONNECTED_PEOPLE.append(conn)
+    user = None
     while True:
         try:
             a = conn.recv(2048)
             b = conn.recv(2048)
-            print(len(a))
-            print(len(b))
             my_type = pickle.loads(a)
             data = pickle.loads(b)
+            print(my_type)
+            print(data)
             type_str = my_type["TYPE"]
             if type_str == "LOGIN":
-                result = DBManager.login(data["nick"], data["password"])
-                send(conn, {"USER_ID": result})
+                user = DB.login(data["nick"], data["password"])
+                send(conn, {"USER_ID": True})
             elif type_str == "WANT_PLAY":
                 WANT_TO_PLAY[current_player] = True
-            elif type_str == "ACCOUNT_ASK":
-                send(conn, DBManager.get_account(data["USER_ID"]))
+                print("ended blocking communication with ", current_player)
+                unlock_socket(conn)
+                return
             elif type_str == "HISTORY_ASK":
-                send(conn, DBManager.get_history(data["USER_ID"]))
-            elif type_str == "STATS_ASK":
-                send(conn, DBManager.get_stats(data["USER_ID"]))
+                send(conn, DB.my_battle_history(user))
+            elif type_str == "STAT_ASK":
+                send(conn, DB.get_stat(user))
+            elif type_str == "NICK_ASK":
+                send(conn, DB.get_nick(user))
+            elif type_str == "CHANGE_PASS":
+                send(conn, DB.change_password(data["old_nick"], data["old_pass"], data["new_nick"], data["new_pass"]))
         except socket.error as err:
             print("moj blad: ", err)
             break
@@ -100,14 +108,13 @@ def game():
     player1 = Player("player1")
     player2 = Player("player2")
     engine = GameEngine(player1, player2)
-    for i in range(len(CONNECTED_PEOPLE)):
-        unlock_socket(CONNECTED_PEOPLE[i])
     flag = True
     index = 0
     dt = 1 / 60
     end_frame_time = 0
     start_frame_time = get_time()
     print("GAME")
+    end_time = None
     while flag:
         index += 1
         keys = {}
@@ -116,43 +123,71 @@ def game():
                 keys[i] = recv_data_on_open_socket(CONNECTED_PEOPLE[i])
             except socket.error as er:
                 keys[i] = None
+
         game_state = engine.update(dt, keys[0], keys[1])
-        if index % PER == 0:
+
+        if game_state.has_ended and end_time is None:
+            end_time = get_time()
+        if end_time and (get_time()-end_time) * 1e-9 >= 1:
+            game_state.should_exit = True
+
+        if index % PER == 0 or game_state.should_exit:
             index = 0
             for i in range(len(CONNECTED_PEOPLE)):
-                send_data_on_open_socket(CONNECTED_PEOPLE[i], game_state.to_render)
+                send_data_on_open_socket(CONNECTED_PEOPLE[i], game_state)
+
+        if game_state.should_exit:
+            for i in range(len(CONNECTED_PEOPLE)):
+                WANT_TO_PLAY[i] = False
+                # block sockets
+                block_socket(CONNECTED_PEOPLE[i])
+                # create threads
+                player_thread = threading.Thread(target=threaded_client, args=[CONNECTED_PEOPLE[i], i])
+                player_thread.start()
+                THREADS.append(player_thread)
+
+            flag = False
+
         end_frame_time = get_time()
         dt = (end_frame_time - start_frame_time) * 1e-9
         start_frame_time = get_time()
+    return
 
 
 def start():
     global WANT_TO_PLAY
     global CONNECTED_PEOPLE
     global THREADS
-    current_player = 0
+    n_active_clients = 0
     server.listen(MAX_CONNECTED_PEOPLE)
     print("Waiting for a connection, Server started")
-    while current_player < 2:
+    while n_active_clients < 2:
         conn, addr = server.accept()
         print("[CONNECTED] connected to: ", addr)
-        player_one_thread = threading.Thread(target=threaded_client, args=[conn, current_player])
-        player_one_thread.start()
-        THREADS.append(player_one_thread)
-        current_player += 1
-        print("[Active connections]", threading.activeCount() - 1)
-        flag1 = True
-        if current_player == 2:
-            while flag1:
-                time.sleep(1)
-                if current_player == 2 and WANT_TO_PLAY[0] and WANT_TO_PLAY[1]:
-                    data = {"RES": True}
-                    for i in range(len(CONNECTED_PEOPLE)):
-                        send_data_on_open_socket(CONNECTED_PEOPLE[i], data)
-                    for th in THREADS:
-                        terminate_thread(th)
-                    flag1 = False
-    game()
+        conn.send(pickle.dumps("Connected"))
+        CONNECTED_PEOPLE.append(conn)
+        player_thread = threading.Thread(target=threaded_client, args=[conn, n_active_clients])
+        player_thread.start()
+        THREADS.append(player_thread)
+        n_active_clients += 1
+        if n_active_clients == 2:
+            waiting_for_new_game()
+
+
+def waiting_for_new_game():
+    global THREADS
+    while True:
+        time.sleep(1)
+        if WANT_TO_PLAY[0] and WANT_TO_PLAY[1]:
+            for th in THREADS:
+                th.join()
+            data = {"RES": True}
+            for i in range(len(CONNECTED_PEOPLE)):
+                send_data_on_open_socket(CONNECTED_PEOPLE[i], data)
+            # for th in THREADS:
+            #    terminate_thread(th)
+            # THREADS = []
+            game()
 
 
 def recv_data_on_open_socket(client):
@@ -176,13 +211,11 @@ def recv_data_on_open_socket(client):
 
 def send_data_on_open_socket(client, data):
     msg = pickle.dumps(data)
-    msg = bytes(f"{len(msg):<{HEADER}}", 'utf-8') + msg
-    client.send(msg)
+    msg1 = bytes(f"{len(msg):<{HEADER}}", 'utf-8') + msg
+    client.send(msg1)
 
 
 if __name__ == '__main__':
     print("Starting server...")
     print(ADDR)
     start()
-
-

@@ -291,7 +291,10 @@ class CollisionResolveSystem:
                             # pygame.mixer.Sound.play(self.hit_sound)
                             # pygame.mixer.Sound.play(self.hit_sound)
                             # pygame.mixer.Sound.play(self.hit_sound)
-                            self.entity_manager.remove_entity(ent2)
+                            # self.entity_manager.remove_entity(ent2)
+                            self.entity_manager.delete_component(RenderComponent(), ent2)
+                            # self.entity_manager.delete_component(HitboxComponent(), ent2)
+
                         else:
                             health_comp2.curr_hp -= dmg
                 continue
@@ -312,7 +315,9 @@ class CollisionResolveSystem:
                             # pygame.mixer.Sound.play(self.hit_sound)
                             # pygame.mixer.Sound.play(self.hit_sound)
                             # pygame.mixer.Sound.play(self.hit_sound)
-                            self.entity_manager.remove_entity(ent1)
+                            # self.entity_manager.remove_entity(ent1)
+                            self.entity_manager.delete_component(RenderComponent(), ent1)
+                            # self.entity_manager.delete_component(HitboxComponent(), ent1)
                         else:
                             health_comp1.curr_hp -= dmg
                 continue
@@ -465,5 +470,17 @@ class GameStateSystem:
         # update frame time
         self.state.frame_time = dt
 
+        self.check_for_endgame()
+
         # return ready state (for clients)
         return deepcopy(self.state)
+
+    def check_for_endgame(self):
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(ControlComponent())
+        for ent in entities:
+            control_comp = self.entity_manager.get_component_of_class(ControlComponent(), ent)
+            health_comp = self.entity_manager.get_component_of_class(HealthComponent(), ent)
+            if health_comp:
+                if health_comp.curr_hp <= 0:
+                    self.state.has_ended = True
+                    self.state.winner = control_comp.player.nick

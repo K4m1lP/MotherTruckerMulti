@@ -62,6 +62,7 @@ class GameState:
         self.has_ended = False
         self.winner = None
         self.frame_time = None
+        self.should_exit = False
 
 
 class Sprite:
