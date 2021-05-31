@@ -1,7 +1,4 @@
-import pygame
-
 from Scenes.Scene import Scene
-from settings import SCR_WIDTH, SCR_HEIGHT
 
 
 class WaitingScene(Scene):

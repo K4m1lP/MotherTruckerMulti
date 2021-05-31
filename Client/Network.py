@@ -95,7 +95,6 @@ class Client:
         return self.USER_ID
 
     def is_second_connected(self):
-        print("Sprawdzam czy drugi chce grac")
         try:
             msg = self.recv_data_on_open_socket()
         except socket.error as e:

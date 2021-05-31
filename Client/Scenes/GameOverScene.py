@@ -26,5 +26,5 @@ def create_game_over_view(client, events):
 
 
 def continue_function(client, events):
-    events.add_scene_change("menu")
+    events.add_scene_change("single_or_multi_scene")
 

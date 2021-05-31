@@ -34,7 +34,7 @@ class EntityManager:
                     if not self._entities.__contains__(i):
                         return i
             except ValueError:
-                print("No more space for entities!")
+                print("Brakło inta czy coś, do zbadania")
 
     def create_entity(self, name):
         new_id = self._new_id()
@@ -50,6 +50,7 @@ class EntityManager:
 
     def delete_component(self, comp, entity_int):
         self._components[comp.__class__.__name__][entity_int] = None
+
 
     def get_component_of_class(self, comp, entity):
         if comp.__class__.__name__ in self._components and entity in self._components[comp.__class__.__name__]:
@@ -164,7 +165,7 @@ class EntityFactory:
 
     def create_obstacles_from_file(self, filename):
         delimiter = ', '
-        file = open(os.path.join('maps/', filename), "r")
+        file = open(os.path.join('assets/maps/', filename), "r")
         # read headers (three lines)
         tile_size = int(file.readline())
         tiles_width = int(file.readline())
@@ -175,16 +176,19 @@ class EntityFactory:
             tiles_row = [int(x) for x in tiles_row_str.split(delimiter) if x.strip()]
             for j in range(tiles_width):
                 if tiles_row[j] == 1:
-                    self.create_tile(Vec2d(tile_size / 2 + tile_size * (j+1), tile_size / 2 + tile_size * (i+1)), tile_size, tile_size)
+                    self.create_tile(Vec2d(tile_size / 2 + tile_size * (j+1), tile_size / 2 + tile_size * (i+1)),
+                                     tile_size, tile_size)
         file.close()
 
     def create_default_obstacles(self):
-        self.create_tile(Vec2d(SCR_WIDTH / 2, SCR_HEIGHT / 2),
-                         50, int(SCR_HEIGHT / 2))
+        self.create_tile(Vec2d(SCR_WIDTH/2, SCR_HEIGHT/2),
+                         50, int(SCR_HEIGHT/2))
         self.create_tile(Vec2d(SCR_WIDTH / 2 + 25 - int(SCR_WIDTH / 8), SCR_HEIGHT / 4),
                          int(SCR_WIDTH / 4), 50)
         self.create_tile(Vec2d(SCR_WIDTH / 2 - 25 + int(SCR_WIDTH / 8), SCR_HEIGHT / 4 * 3),
                          int(SCR_WIDTH / 4), 50)
+
+
 
 class Collision:
     def __init__(self, ent1, ent2, pen_length, pen_vec):

@@ -13,6 +13,7 @@ from Scenes.LoginScene import LoginScene
 from Scenes.MenuScene import MenuScene
 from Scenes.ServerScene import ServerScene
 from Scenes.SettingScene import SettingScene
+from Scenes.SingleGameScene import SingleGameScene
 from Scenes.SingleOrMultiScene import SingleOrMultiScene
 from Scenes.StatsScene import StatsScene
 from Scenes.WaittingScene import WaitingScene
@@ -33,15 +34,14 @@ if __name__ == '__main__':
     current_scene = SingleOrMultiScene(game_window)
     events_manager = Events.get_instance()
     while not should_close:
-        game_window.fill((255, 200, 255))
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT or events_manager.exit_event:
                 client.close_connection()
                 should_close = True
         current_scene.draw(events)
-        # print("FPS: {}".format(1 / dt))
         pygame.display.update()
+        game_window.fill((120, 110, 100))
         change = events_manager.get_scene_change()
         if change:
             if change == "menu":
@@ -68,6 +68,8 @@ if __name__ == '__main__':
                 current_scene = ChangeScene(game_window)
             if change == "game_over_scene":
                 current_scene = GameOverScene(game_window)
+            if change == "single_menu":
+                current_scene = SingleGameScene(game_window)
         end_time = get_time()
         dt = (end_time - start_time) * 1e-9
         start_time = get_time()
@@ -75,7 +77,7 @@ if __name__ == '__main__':
     pygame.quit()
     quit()
 
-# podpiecie single
+
 # przygotowanie okien servera
 # poprawa wyswietlania
 # dokumentacja

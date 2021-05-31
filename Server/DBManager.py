@@ -39,9 +39,6 @@ class Map(me.Document):
     InitPos2 = me.fields.PointField()
 
 
-
-
-
 def code(password):
     return hashlib.md5(password.encode()).hexdigest()
 

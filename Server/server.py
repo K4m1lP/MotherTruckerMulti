@@ -21,7 +21,7 @@ HEADER = 10
 CONNECTED_PEOPLE = []
 WANT_TO_PLAY = [False, False]
 THREADS = []
-PER = 10
+PER = 1
 if DATA_BASE:
     DB = DBManager
 else:
@@ -171,10 +171,10 @@ def start():
         THREADS.append(player_thread)
         n_active_clients += 1
         if n_active_clients == 2:
-            waiting_for_new_game()
+            accept_games()
 
 
-def waiting_for_new_game():
+def accept_games():
     global THREADS
     while True:
         time.sleep(1)
@@ -184,9 +184,6 @@ def waiting_for_new_game():
             data = {"RES": True}
             for i in range(len(CONNECTED_PEOPLE)):
                 send_data_on_open_socket(CONNECTED_PEOPLE[i], data)
-            # for th in THREADS:
-            #    terminate_thread(th)
-            # THREADS = []
             game()
 
 

@@ -1,8 +1,9 @@
 import math
+import os
 import random
 from copy import deepcopy
 from math import cos, sin, inf
-
+from time import time_ns as get_time
 
 import pygame
 
@@ -81,11 +82,23 @@ class ControlSystem:
                 continue
 
             # player impact - engine force and rotating
-            if control_comp and control_comp.player.keys:
+            if control_comp:
+                if control_comp.player.id == 0:
+                    right = pygame.K_d
+                    left = pygame.K_a
+                    forward = pygame.K_w
+                    backward = pygame.K_s
+                elif control_comp.player.id == 1:
+                    right = pygame.K_RIGHT
+                    left = pygame.K_LEFT
+                    forward = pygame.K_UP
+                    backward = pygame.K_DOWN
+                else:
+                    raise Exception("Wrong player id!")
                 angle_change_direction = 0
-                if control_comp.player.keys[pygame.K_d]:
+                if control_comp.player.keys[right]:
                     angle_change_direction += 1
-                if control_comp.player.keys[pygame.K_a]:
+                if control_comp.player.keys[left]:
                     angle_change_direction -= 1
                 if angle_change_direction != 0:
                     pos_comp.orient.normalize()
@@ -94,9 +107,9 @@ class ControlSystem:
                     hb_comp.is_dirty = True
 
                 engine_force = Vec2d(0, 0)
-                if control_comp.player.keys[pygame.K_w]:
+                if control_comp.player.keys[forward]:
                     engine_force = engine_force.add(pos_comp.orient.scale(control_comp.engine_acc_forward))
-                if control_comp.player.keys[pygame.K_s]:
+                if control_comp.player.keys[backward]:
                     engine_force = engine_force.add(pos_comp.orient.scale(control_comp.engine_acc_backward * (-1)))
 
                 dynamics_comp.force = dynamics_comp.force.add(engine_force)
@@ -369,8 +382,6 @@ class WeaponSystem:
     def __init__(self, entity_manager, entity_factory):
         self.entity_manager = entity_manager
         self.entity_factory = entity_factory
-        # self.shot_sound = pygame.mixer.Sound(os.path.join('assets/sounds/', 'shot.mp3'))
-        # self.shot_sound.set_volume(0.2)
 
     def update(self, dt):
         entities = self.entity_manager.get_all_entities_possessing_component_of_class(ShootingComponent())
@@ -381,8 +392,17 @@ class WeaponSystem:
             dyn_comp = self.entity_manager.get_component_of_class(DynamicsComponent(), entity)
             con_comp = self.entity_manager.get_component_of_class(ControlComponent(), entity)
 
-            if pos_comp and dyn_comp and con_comp and con_comp.player.keys:
-                if con_comp.player.keys[pygame.K_SPACE]:
+            if pos_comp and dyn_comp and con_comp:
+
+                if con_comp.player.id == 0:
+                    shot = pygame.K_SPACE
+                    mine = pygame.K_f
+                elif con_comp.player.id == 1:
+                    shot = pygame.K_KP0
+                    mine = pygame.K_KP1
+                else:
+                    raise Exception("Wrong player id!")
+                if con_comp.player.keys[shot]:
                     time_since_last_shot = (get_time() * 1e-9) - shot_comp.last_time_shot
                     if time_since_last_shot > shot_comp.reload_time:
                         # inaccuracy mechanism
@@ -396,7 +416,7 @@ class WeaponSystem:
                         # pygame.mixer.Sound.play(self.shot_sound)
                         shot_comp.last_time_shot = get_time() * 1e-9
 
-                if con_comp.player.keys[pygame.K_f]:
+                if con_comp.player.keys[mine]:
                     time_since_last_mine = (get_time() * 1e-9) - shot_comp.last_time_mine
                     if time_since_last_mine > shot_comp.reload_mine_time:
                         self.entity_factory.create_mine(pos_comp.pos, entity)
@@ -437,18 +457,12 @@ class KeysUpdateSystem:
     def __init__(self, entity_manager):
         self.entity_manager = entity_manager
 
-    def update(self, keys1, keys2):
+    def update(self, keys):
         entities = self.entity_manager.get_all_entities_possessing_component_of_class(ControlComponent())
 
         for ent in entities:
             control_comp = self.entity_manager.get_component_of_class(ControlComponent(), ent)
-            if control_comp.player.id == 0:
-                control_comp.player.keys = keys1
-            elif control_comp.player.id == 1:
-                control_comp.player.keys = keys2
-            else:
-                print("Error: KeysUpdateSystem: wrong player id!")
-                exit(1)
+            control_comp.player.keys = keys
 
 
 class GameStateSystem:

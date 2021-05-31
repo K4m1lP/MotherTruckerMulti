@@ -20,19 +20,17 @@ class GameEngine:
         # some start game objects
         self.initialize()
 
-    def update(self, dt, keys1, keys2):
-        if keys1:
-            self.player1.keys = keys1
-        if keys2:
-            self.player2.keys = keys2
-        self.keys_sys.update(self.player1.keys, self.player2.keys)
+    def update(self, dt, keys):
+        self.keys_sys.update(keys)
         self.ph_sys.update(dt)
         self.wpn_sys.update(dt)
         self.anim_sys.update(dt)
+        # print("FPS: {}".format(1 / dt))
         return self.state_sys.get_state(dt)
 
     def initialize(self):
         self.entity_factory.create_protagonist(self.player1)
         self.entity_factory.create_protagonist(self.player2)
         self.entity_factory.create_border_walls()
+        # self.entity_factory.create_obstacles_from_file('map0.txt')
         self.entity_factory.create_default_obstacles()
