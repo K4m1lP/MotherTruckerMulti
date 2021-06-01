@@ -1,0 +1,296 @@
+[
+  {
+    "_id": {"$oid": "60af0aa09e3765c8675b9b71"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60aedce18cae866b3e82cdbf"},
+      {"$oid": "60af0773d851e3253e08d272"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af0aa09e3765c8675b9b6f"},
+      {"$oid": "60af0aa09e3765c8675b9b70"}
+    ],
+    "Winner": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af3920a11c31674e90236d"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2ea971a66a1e3d4b2ede"},
+      {"$oid": "60af2eb371a66a1e3d4b2edf"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3920a11c31674e90236b"},
+      {"$oid": "60af3920a11c31674e90236c"}
+    ],
+    "Winner": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3935a11c31674e902370"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2eb971a66a1e3d4b2ee0"},
+      {"$oid": "60af0773d851e3253e08d272"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3935a11c31674e90236e"},
+      {"$oid": "60af3935a11c31674e90236f"}
+    ],
+    "Winner": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af393da11c31674e902373"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2ea971a66a1e3d4b2ede"},
+      {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af393da11c31674e902371"},
+      {"$oid": "60af393da11c31674e902372"}
+    ],
+    "Winner": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3943a11c31674e902376"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af0773d851e3253e08d272"},
+      {"$oid": "60af2ea971a66a1e3d4b2ede"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3943a11c31674e902374"},
+      {"$oid": "60af3943a11c31674e902375"}
+    ],
+    "Winner": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3949a11c31674e902379"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2eb371a66a1e3d4b2edf"},
+      {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3949a11c31674e902377"},
+      {"$oid": "60af3949a11c31674e902378"}
+    ],
+    "Winner": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af394da11c31674e90237c"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2ea971a66a1e3d4b2ede"},
+      {"$oid": "60af2eb371a66a1e3d4b2edf"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af394da11c31674e90237a"},
+      {"$oid": "60af394da11c31674e90237b"}
+    ],
+    "Winner": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3bb5d1571de03a393a73"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60aedce18cae866b3e82cdbf"},
+      {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3bb5d1571de03a393a71"},
+      {"$oid": "60af3bb5d1571de03a393a72"}
+    ],
+    "Winner": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3bb9d1571de03a393a76"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2eb371a66a1e3d4b2edf"},
+      {"$oid": "60af0773d851e3253e08d272"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3bb9d1571de03a393a74"},
+      {"$oid": "60af3bb9d1571de03a393a75"}
+    ],
+    "Winner": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af3bc5d1571de03a393a79"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2eb371a66a1e3d4b2edf"},
+      {"$oid": "60af2ea971a66a1e3d4b2ede"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3bc5d1571de03a393a77"},
+      {"$oid": "60af3bc5d1571de03a393a78"}
+    ],
+    "Winner": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3bc9d1571de03a393a7c"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60aedce18cae866b3e82cdbf"},
+      {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3bc9d1571de03a393a7a"},
+      {"$oid": "60af3bc9d1571de03a393a7b"}
+    ],
+    "Winner": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3bd0d1571de03a393a7f"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2ea971a66a1e3d4b2ede"},
+      {"$oid": "60aedce18cae866b3e82cdbf"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3bd0d1571de03a393a7d"},
+      {"$oid": "60af3bd0d1571de03a393a7e"}
+    ],
+    "Winner": {"$oid": "60aedce18cae866b3e82cdbf"}
+  },
+  {
+    "_id": {"$oid": "60af3bd6d1571de03a393a82"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2ea971a66a1e3d4b2ede"},
+      {"$oid": "60af2eb371a66a1e3d4b2edf"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3bd6d1571de03a393a80"},
+      {"$oid": "60af3bd6d1571de03a393a81"}
+    ],
+    "Winner": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3be2d1571de03a393a85"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2ea971a66a1e3d4b2ede"},
+      {"$oid": "60af0773d851e3253e08d272"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3be2d1571de03a393a83"},
+      {"$oid": "60af3be2d1571de03a393a84"}
+    ],
+    "Winner": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af3bead1571de03a393a88"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2eb371a66a1e3d4b2edf"},
+      {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3bead1571de03a393a86"},
+      {"$oid": "60af3bead1571de03a393a87"}
+    ],
+    "Winner": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3bebd1571de03a393a8b"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2eb971a66a1e3d4b2ee0"},
+      {"$oid": "60af2eb371a66a1e3d4b2edf"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3bebd1571de03a393a89"},
+      {"$oid": "60af3bebd1571de03a393a8a"}
+    ],
+    "Winner": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3bebd1571de03a393a8e"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2ea971a66a1e3d4b2ede"},
+      {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3bebd1571de03a393a8c"},
+      {"$oid": "60af3bebd1571de03a393a8d"}
+    ],
+    "Winner": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a91"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af0773d851e3253e08d272"},
+      {"$oid": "60af2ea971a66a1e3d4b2ede"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3becd1571de03a393a8f"},
+      {"$oid": "60af3becd1571de03a393a90"}
+    ],
+    "Winner": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a94"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af0773d851e3253e08d272"},
+      {"$oid": "60aedce18cae866b3e82cdbf"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3becd1571de03a393a92"},
+      {"$oid": "60af3becd1571de03a393a93"}
+    ],
+    "Winner": {"$oid": "60aedce18cae866b3e82cdbf"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a97"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af0773d851e3253e08d272"},
+      {"$oid": "60af2ea971a66a1e3d4b2ede"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3becd1571de03a393a95"},
+      {"$oid": "60af3becd1571de03a393a96"}
+    ],
+    "Winner": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a9a"},
+    "Date": {"$date": "2021-05-27T00:00:00.000Z"},
+    "MapName": "Malinowka",
+    "UsersInvolved": [
+      {"$oid": "60af2eb971a66a1e3d4b2ee0"},
+      {"$oid": "60af0773d851e3253e08d272"}
+    ],
+    "UsersResults": [
+      {"$oid": "60af3becd1571de03a393a98"},
+      {"$oid": "60af3becd1571de03a393a99"}
+    ],
+    "Winner": {"$oid": "60af0773d851e3253e08d272"}
+  }
+]

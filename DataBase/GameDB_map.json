@@ -1,0 +1,15 @@
+[
+  {
+    "_id": {"$oid": "60aef1942ba1c58f7d7cc1f7"},
+    "InitPos1": {
+      "type": "Point",
+      "coordinates": [0, 0]
+    },
+    "InitPos2": {
+      "type": "Point",
+      "coordinates": [1, 1]
+    },
+    "MapName": "Malinowka",
+    "SrcPath": "some_ex_src"
+  }
+]

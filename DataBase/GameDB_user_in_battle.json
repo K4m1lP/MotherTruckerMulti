@@ -1,0 +1,380 @@
+[
+  {
+    "_id": {"$oid": "60af0aa09e3765c8675b9b6f"},
+    "GetDamage": 1000,
+    "GivenDamage": 750,
+    "NumOfShots": 10,
+    "NumOfShotsOnTarget": 3,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60aedce18cae866b3e82cdbf"}
+  },
+  {
+    "_id": {"$oid": "60af0aa09e3765c8675b9b70"},
+    "GetDamage": 750,
+    "GivenDamage": 1000,
+    "NumOfShots": 4,
+    "NumOfShotsOnTarget": 3,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af3920a11c31674e90236b"},
+    "GetDamage": 1000,
+    "GivenDamage": 255,
+    "NumOfShots": 7,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3920a11c31674e90236c"},
+    "GetDamage": 255,
+    "GivenDamage": 1000,
+    "NumOfShots": 7,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3935a11c31674e90236e"},
+    "GetDamage": 1000,
+    "GivenDamage": 213,
+    "NumOfShots": 6,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3935a11c31674e90236f"},
+    "GetDamage": 213,
+    "GivenDamage": 1000,
+    "NumOfShots": 4,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af393da11c31674e902371"},
+    "GetDamage": 1000,
+    "GivenDamage": 104,
+    "NumOfShots": 3,
+    "NumOfShotsOnTarget": 3,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af393da11c31674e902372"},
+    "GetDamage": 104,
+    "GivenDamage": 1000,
+    "NumOfShots": 4,
+    "NumOfShotsOnTarget": 3,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3943a11c31674e902374"},
+    "GetDamage": 1000,
+    "GivenDamage": 735,
+    "NumOfShots": 7,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af3943a11c31674e902375"},
+    "GetDamage": 735,
+    "GivenDamage": 1000,
+    "NumOfShots": 1,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3949a11c31674e902377"},
+    "GetDamage": 1000,
+    "GivenDamage": 429,
+    "NumOfShots": 9,
+    "NumOfShotsOnTarget": 3,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3949a11c31674e902378"},
+    "GetDamage": 429,
+    "GivenDamage": 1000,
+    "NumOfShots": 4,
+    "NumOfShotsOnTarget": 3,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af394da11c31674e90237a"},
+    "GetDamage": 1000,
+    "GivenDamage": 479,
+    "NumOfShots": 1,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af394da11c31674e90237b"},
+    "GetDamage": 479,
+    "GivenDamage": 1000,
+    "NumOfShots": 6,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3bb5d1571de03a393a71"},
+    "GetDamage": 1000,
+    "GivenDamage": 553,
+    "NumOfShots": 1,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60aedce18cae866b3e82cdbf"}
+  },
+  {
+    "_id": {"$oid": "60af3bb5d1571de03a393a72"},
+    "GetDamage": 553,
+    "GivenDamage": 1000,
+    "NumOfShots": 2,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3bb9d1571de03a393a74"},
+    "GetDamage": 1000,
+    "GivenDamage": 793,
+    "NumOfShots": 2,
+    "NumOfShotsOnTarget": 2,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3bb9d1571de03a393a75"},
+    "GetDamage": 793,
+    "GivenDamage": 1000,
+    "NumOfShots": 1,
+    "NumOfShotsOnTarget": 2,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af3bc5d1571de03a393a77"},
+    "GetDamage": 1000,
+    "GivenDamage": 328,
+    "NumOfShots": 2,
+    "NumOfShotsOnTarget": 4,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3bc5d1571de03a393a78"},
+    "GetDamage": 328,
+    "GivenDamage": 1000,
+    "NumOfShots": 1,
+    "NumOfShotsOnTarget": 4,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3bc9d1571de03a393a7a"},
+    "GetDamage": 1000,
+    "GivenDamage": 609,
+    "NumOfShots": 2,
+    "NumOfShotsOnTarget": 4,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60aedce18cae866b3e82cdbf"}
+  },
+  {
+    "_id": {"$oid": "60af3bc9d1571de03a393a7b"},
+    "GetDamage": 609,
+    "GivenDamage": 1000,
+    "NumOfShots": 6,
+    "NumOfShotsOnTarget": 4,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3bd0d1571de03a393a7d"},
+    "GetDamage": 1000,
+    "GivenDamage": 487,
+    "NumOfShots": 8,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3bd0d1571de03a393a7e"},
+    "GetDamage": 487,
+    "GivenDamage": 1000,
+    "NumOfShots": 8,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60aedce18cae866b3e82cdbf"}
+  },
+  {
+    "_id": {"$oid": "60af3bd6d1571de03a393a80"},
+    "GetDamage": 1000,
+    "GivenDamage": 985,
+    "NumOfShots": 4,
+    "NumOfShotsOnTarget": 4,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3bd6d1571de03a393a81"},
+    "GetDamage": 985,
+    "GivenDamage": 1000,
+    "NumOfShots": 1,
+    "NumOfShotsOnTarget": 4,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3be2d1571de03a393a83"},
+    "GetDamage": 1000,
+    "GivenDamage": 78,
+    "NumOfShots": 9,
+    "NumOfShotsOnTarget": 4,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3be2d1571de03a393a84"},
+    "GetDamage": 78,
+    "GivenDamage": 1000,
+    "NumOfShots": 1,
+    "NumOfShotsOnTarget": 4,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af3bead1571de03a393a86"},
+    "GetDamage": 1000,
+    "GivenDamage": 915,
+    "NumOfShots": 3,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3bead1571de03a393a87"},
+    "GetDamage": 915,
+    "GivenDamage": 1000,
+    "NumOfShots": 2,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3bebd1571de03a393a89"},
+    "GetDamage": 1000,
+    "GivenDamage": 586,
+    "NumOfShots": 6,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3bebd1571de03a393a8a"},
+    "GetDamage": 586,
+    "GivenDamage": 1000,
+    "NumOfShots": 5,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb371a66a1e3d4b2edf"}
+  },
+  {
+    "_id": {"$oid": "60af3bebd1571de03a393a8c"},
+    "GetDamage": 1000,
+    "GivenDamage": 389,
+    "NumOfShots": 7,
+    "NumOfShotsOnTarget": 3,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3bebd1571de03a393a8d"},
+    "GetDamage": 389,
+    "GivenDamage": 1000,
+    "NumOfShots": 3,
+    "NumOfShotsOnTarget": 3,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a8f"},
+    "GetDamage": 1000,
+    "GivenDamage": 452,
+    "NumOfShots": 1,
+    "NumOfShotsOnTarget": 2,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a90"},
+    "GetDamage": 452,
+    "GivenDamage": 1000,
+    "NumOfShots": 8,
+    "NumOfShotsOnTarget": 2,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a92"},
+    "GetDamage": 1000,
+    "GivenDamage": 277,
+    "NumOfShots": 8,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a93"},
+    "GetDamage": 277,
+    "GivenDamage": 1000,
+    "NumOfShots": 6,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60aedce18cae866b3e82cdbf"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a95"},
+    "GetDamage": 1000,
+    "GivenDamage": 585,
+    "NumOfShots": 2,
+    "NumOfShotsOnTarget": 2,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af0773d851e3253e08d272"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a96"},
+    "GetDamage": 585,
+    "GivenDamage": 1000,
+    "NumOfShots": 9,
+    "NumOfShotsOnTarget": 2,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2ea971a66a1e3d4b2ede"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a98"},
+    "GetDamage": 1000,
+    "GivenDamage": 376,
+    "NumOfShots": 1,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af2eb971a66a1e3d4b2ee0"}
+  },
+  {
+    "_id": {"$oid": "60af3becd1571de03a393a99"},
+    "GetDamage": 376,
+    "GivenDamage": 1000,
+    "NumOfShots": 2,
+    "NumOfShotsOnTarget": 1,
+    "OpponentHp": 1000,
+    "UserId": {"$oid": "60af0773d851e3253e08d272"}
+  }
+]
