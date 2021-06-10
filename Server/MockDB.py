@@ -60,3 +60,6 @@ def get_new_battle():
     }
 
 
+def logout():
+    pass
+

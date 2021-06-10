@@ -202,7 +202,7 @@ def add_map(src_path, name, init_pos1, init_pos2):
     mp.InitPos1 = [init_pos1[0], init_pos1[1]]
     mp.InitPos2 = [init_pos2[0], init_pos2[1]]
     mp.save()
-
+    return True
 
 def delete_map(self, map_name):
     Map.objects(MapName=map_name).first().delete()
@@ -240,17 +240,24 @@ def i_want_to_play():
     add_battle(map_name, player_result, player2_result)
 
 
+def get_all_battles():
+    history = Battle.objects()
+    res = []
+    for bat in history:
+        winner_id = bat.Winner.id
+        winner_nick = User.objects(id=winner_id).first().Name
+        res.append({
+            "Date": bat.Date,
+            "Map Name": bat.MapName,
+            "Winner": winner_nick
+        })
+    return res
+
+def get_all_users():
+    users = User.objects()
+    return [us.Name for us in users]
 
 if __name__ == '__main__':
-    # login_test()
-    # sign_test()
-    # change_data_test()
-    # add_map("some_ex_src", "Malinowka", [0, 0], [1, 1])
-    # print(get_new_battle())
-
-    # add_battle("Malinowka", player_result, player2_result)
-    # print(my_battle_history("60aedce18cae866b3e82cdbf"))
-    # print(get_stat("60aedce18cae866b3e82cdbf"))
     pass
 
 
