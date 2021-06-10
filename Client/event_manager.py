@@ -1,17 +1,17 @@
-class Events:
+class EventManager:
     __instance = None
 
     @staticmethod
     def get_instance():
-        if not Events.__instance:
-            Events()
-        return Events.__instance
+        if not EventManager.__instance:
+            EventManager()
+        return EventManager.__instance
 
     def __init__(self):
-        if Events.__instance:
+        if EventManager.__instance:
             raise Exception("Class is a singleton!")
         else:
-            Events.__instance = self
+            EventManager.__instance = self
         self.scene_events = []
         self.winner = None
         self.exit_event = False

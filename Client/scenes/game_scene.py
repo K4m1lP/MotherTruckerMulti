@@ -4,55 +4,68 @@ import pygame
 import pygame_menu
 from time import time_ns as get_time
 
-from Scenes.Scene import Scene
-from engine.game_engine import GameEngine
-from utils import Player
+from scenes.scene import Scene
 
 
-class SingleGameScene(Scene):
+class GameScene(Scene):
     def __init__(self, window):
         super().__init__(window)
-        self.game_keys = [pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_SPACE,
+        self.client.unlock_socket()
+        self.game_keys = [pygame.K_a, pygame.K_d, pygame.K_a, pygame.K_s, pygame.K_SPACE,
                           pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT,
-                          pygame.K_KP0, pygame.K_KP1, pygame.K_f, pygame.K_ESCAPE,
+                          pygame.K_KP0, pygame.K_KP1, pygame.K_f, pygame.K_w, pygame.K_ESCAPE,
                           pygame.K_TAB, pygame.K_e]
-        self.pressed_keys = {}
-        for key in self.game_keys:
-            self.pressed_keys[key] = False
         self.prev_pressed_keys = {}
         for key in self.game_keys:
             self.prev_pressed_keys[key] = False
+        self.pressed_keys = {}
+        for key in self.game_keys:
+            self.pressed_keys[key] = False
+        self.obj = None
         self.images = {}
         self.does_menu = False
         self.menu = pygame_menu.Menu(title="Game menu", height=250, width=500, theme=pygame_menu.themes.THEME_DARK)
         self.menu.add.button("Quit", exit_fun, self.events)
-        pl1 = Player("player1")
-        pl2 = Player("player2")
-        self.engine = GameEngine(pl1, pl2)
-        self.end_time_frame_ended = get_time()
+        self.score_tab = pygame_menu.Menu(title="Score tab", height=250, width=500, theme=pygame_menu.themes.THEME_DARK)
+        self.score_tab.add.label("Your hp: ")
+        self.score_tab.add.label("Opponent hp: ")
+        self.surface = pygame.Surface((1000, 500), pygame.SRCALPHA)
         self.fps_sys = FpsRenderSystem(window)
         self.end_time = None
+        self.end_time_frame_ended = get_time()
 
     def draw(self, events):
         dt = (get_time() - self.end_time_frame_ended) * 1e-9
         self.end_time_frame_ended = get_time()
-        self.get_keys(events)
-        game_state = self.engine.update(dt, self.pressed_keys)
+        is_changed = self.get_keys(events)
+        if is_changed:
+            self.client.send_key(self.pressed_keys)
 
-        if game_state.has_ended and self.end_time is None:
-            self.end_time = get_time()
-        if self.end_time and (get_time()-self.end_time) * 1e-9 >= 1:
-            game_state.should_exit = True
-            self.events.add_scene_change("game_over_scene")
-            self.events.set_winner(game_state.winner)
-            return
+        game_state = self.client.get_game_status()
+        if game_state:
+            self.obj = game_state.to_render
 
-        self.render_all(game_state.to_render, dt)
+            if game_state.should_exit:
+                self.client.block_socket()
+                self.events.add_scene_change("game_over_scene")
+                self.events.set_winner(game_state.winner)
+                return
+
+        if self.obj:
+            self.render_all(self.obj, dt)
 
         if self.does_menu and not self.pressed_keys[pygame.K_TAB]:
+            # tmp delete
+            # self.window.blit(self.surface, (0, 0))
             if self.menu.is_enabled():
                 self.menu.update(events)
                 self.menu.draw(self.window)
+
+        if self.pressed_keys[pygame.K_TAB] and not self.does_menu:
+            self.window.blit(self.surface, (0, 0))
+            if self.score_tab.is_enabled():
+                self.score_tab.update(events)
+                self.score_tab.draw(self.window)
 
     def get_keys(self, events):
         for event in events:
@@ -66,6 +79,12 @@ class SingleGameScene(Scene):
                 key = event.key
                 if key in self.game_keys:
                     self.pressed_keys[key] = False
+        is_changed = False
+        for code in self.prev_pressed_keys:
+            if self.prev_pressed_keys[code] != self.pressed_keys[code]:
+                is_changed = True
+            self.prev_pressed_keys[code] = self.pressed_keys[code]
+        return is_changed
 
     def render_all(self, sprites, dt):
         sprites.sort(key=lambda s: s.z)
@@ -75,7 +94,7 @@ class SingleGameScene(Scene):
                 y = sprite.pos.y
                 # if new, save to ram not to access disc every frame
                 image_name = sprite.img_name
-                if image_name not in self.images and image_name != 'tile.png':
+                if image_name not in self.images:
                     self.images[image_name] = pygame.image.load(os.path.join('assets/images/textures/', image_name)).convert_alpha()
                     if sprite.size and sprite.fixed_size:
                         self.images[image_name] = pygame.transform.scale(self.images[image_name], sprite.size)

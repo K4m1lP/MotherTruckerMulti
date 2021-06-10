@@ -1,5 +1,6 @@
 from math import sqrt, sin, cos, atan2, pi
 
+
 class Vec2d:
     def __init__(self, x=0., y=0.):
         self.x = x
@@ -54,7 +55,6 @@ class Player:
         self.id = Player.__next_free_idx
         Player.__next_free_idx += 1
         Player.__next_free_idx %= 2
-
 
 
 class GameState:

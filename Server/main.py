@@ -1,11 +1,11 @@
 import socket
 import threading
-import DBManager
+import db_manager
 import pickle
 import time
 from time import time_ns as get_time
 
-import MockDB
+import db_mock
 from engine.game_engine import GameEngine
 from settings import DATA_BASE
 from utils import Player
@@ -23,9 +23,9 @@ WANT_TO_PLAY = [False, False]
 THREADS = []
 PER = 1
 if DATA_BASE:
-    DB = DBManager
+    DB = db_manager
 else:
-    DB = MockDB
+    DB = db_mock
 game_state = None
 
 try:
