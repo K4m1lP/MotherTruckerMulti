@@ -1,6 +1,6 @@
 import pygame_menu
 
-from Scenes.scene import Scene
+from scenes.scene import Scene
 from settings import SCR_WIDTH, SCR_HEIGHT
 
 

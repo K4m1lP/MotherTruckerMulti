@@ -1,4 +1,4 @@
-from Scenes.scene import Scene
+from scenes.scene import Scene
 
 
 class WaitingScene(Scene):

@@ -4,7 +4,7 @@ import pygame
 import pygame_menu
 from time import time_ns as get_time
 
-from Scenes.scene import Scene
+from scenes.scene import Scene
 
 
 class MultiGameScene(Scene):
@@ -48,7 +48,7 @@ class MultiGameScene(Scene):
             if game_state.should_exit:
                 self.client.block_socket()
                 self.event_manager.add_scene_change("game_over_scene")
-                self.event_manager.set_winner(game_state.winner)
+                self.event_manager.set_winner(game_state.looser)
                 return
 
         if self.obj:

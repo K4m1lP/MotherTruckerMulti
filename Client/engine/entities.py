@@ -1,4 +1,5 @@
 import os
+from random import random
 
 from engine.components import *
 from settings import *
@@ -104,7 +105,8 @@ class EntityFactory:
         self._entity_manager.add_component(PositionComponent(pos=pos, orient=orient, z=2), entity)
         self._entity_manager.add_component(DynamicsComponent(vel=orient * speed, mass=1), entity)
         self._entity_manager.add_component(RenderComponent('bullet.png', None, False, True), entity)
-        self._entity_manager.add_component(HitComponent(250, owner_id), entity)
+        dmg = AVG_BULLET_DMG * (1 + ((random() * 0.5) - 0.25))  # dmg range: +/- 25% avg
+        self._entity_manager.add_component(HitComponent(dmg, owner_id), entity)
         self._entity_manager.add_component(HitboxComponent((30, 17)), entity)
 
     def create_border_walls(self):

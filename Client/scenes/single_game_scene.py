@@ -3,8 +3,8 @@ import os
 import pygame
 import pygame_menu
 from time import time_ns as get_time
-from settings import SCR_HEIGHT, SCR_WIDTH
-from Scenes.scene import Scene
+from settings import SCR_HEIGHT, SCR_WIDTH, GAME_KEYS
+from scenes.scene import Scene
 from engine.game_engine import GameEngine
 from utils import Player
 
@@ -12,18 +12,13 @@ from utils import Player
 class SingleGameScene(Scene):
     def __init__(self, window):
         super().__init__(window)
-        self.player1_name = "player1"
-        self.player2_name = "player2"
-        self.game_keys = [pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_SPACE,
-                          pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT,
-                          pygame.K_KP0, pygame.K_KP1, pygame.K_f, pygame.K_ESCAPE,
-                          pygame.K_TAB, pygame.K_e]
+        self.player1_name = "Dark Conqueror"
+        self.player2_name = "Knight of Light"
+        self.game_keys = GAME_KEYS
         self.pressed_keys = {}
-        for key in self.game_keys:
-            self.pressed_keys[key] = False
+        for key in self.game_keys: self.pressed_keys[key] = False
         self.prev_pressed_keys = {}
-        for key in self.game_keys:
-            self.prev_pressed_keys[key] = False
+        for key in self.game_keys: self.prev_pressed_keys[key] = False
         self.images = {}
         self.gui_textures = {self.player1_name: [], self.player2_name: []}
         self.init_gui_textures()
@@ -34,6 +29,8 @@ class SingleGameScene(Scene):
         self.end_time_frame_ended = get_time()
         self.fps_sys = FpsRenderSystem(window)
         self.end_time = None
+        self.player_name_font_size = 30
+        self.player_name_font = pygame.font.SysFont(None, self.player_name_font_size)
 
     def draw(self, events):
         dt = (get_time() - self.end_time_frame_ended) * 1e-9
@@ -46,7 +43,10 @@ class SingleGameScene(Scene):
         if self.end_time and (get_time()-self.end_time) * 1e-9 >= 1:
             game_state.should_exit = True
             self.event_manager.add_scene_change("game_over_scene")
-            self.event_manager.set_winner(game_state.winner)
+            if game_state.looser == self.player1_name:
+                self.event_manager.set_winner(self.player2_name)
+            else:
+                self.event_manager.set_winner(self.player1_name)
             return
 
         self.render_all(game_state.to_render, dt)
@@ -99,27 +99,64 @@ class SingleGameScene(Scene):
 
     def render_gui(self, game_state):
         if game_state:
-            background1 = self.gui_textures[self.player1_name]
-            self.window.blit(background1[0], background1[1])
-
+            for player in [self.player1_name, self.player2_name]:
+                gui_elements = self.gui_textures[player]
+                bg_pos = gui_elements[0][1]
+                # background
+                self.window.blit(*gui_elements[0])
+                # tank-avatar
+                self.window.blit(gui_elements[1][0], (gui_elements[1][1][0] + bg_pos[0],
+                                                      gui_elements[1][1][1] + bg_pos[1]))
+                # bullet-icon
+                if game_state.shot_ready[player]:
+                    self.window.blit(gui_elements[2][0], (gui_elements[2][1][0] + bg_pos[0],
+                                                          gui_elements[2][1][1] + bg_pos[1]))
+                else:
+                    self.window.blit(gui_elements[3][0], (gui_elements[3][1][0] + bg_pos[0],
+                                                          gui_elements[3][1][1] + bg_pos[1]))
+                # hp full bar
+                length = 170
+                thickness = 60
+                start_offset = (105, 70)
+                start_point = [bg_pos[0] + start_offset[0], bg_pos[1] + start_offset[1]]
+                end_point = [bg_pos[0] + start_offset[0] + length, bg_pos[1] + start_offset[1]]
+                pygame.draw.line(self.window, pygame.color.Color(190, 150, 0), start_point, end_point, thickness)
+                # hp current bar
+                if game_state.curr_hp[player] == 0: continue
+                hp_normalized = game_state.curr_hp[player] / game_state.max_hp[player]
+                start_point[0] += 5
+                end_point[0] = bg_pos[0] + start_offset[0] + length * hp_normalized
+                end_point[0] -= 5
+                thickness = 50
+                pygame.draw.line(self.window, pygame.color.Color(140, 100, 0), start_point, end_point, thickness)
+                # names
+                if player == self.player1_name:
+                    img = self.player_name_font.render(self.player1_name, True, (0, 0, 0))
+                    self.window.blit(img, (bg_pos[0] + 110, bg_pos[1] + 14))
+                else:
+                    img = self.player_name_font.render(self.player2_name, True, (0, 0, 0))
+                    self.window.blit(img, (bg_pos[0] + 110, bg_pos[1] + 14))
 
     def init_gui_textures(self):
-        def load_image(_path, name):
-            return pygame.image.load(os.path.join(_path, name)).convert_alpha()
+        def load_image(p, name):
+            return pygame.image.load(os.path.join(p, name)).convert_alpha()
 
-        _path = 'assets/images/textures/'
+        path_ = 'assets/images/textures/'
+
+        tank_avatar_offset = (16, 15)
+        bullet_offset = (67, 22)
 
         self.gui_textures[self.player1_name] = [
-            (load_image(_path, "gui_background.jpg"), (40, 40)),
-            (load_image(_path, "tank0avatar.png"), (20, 25)),
-            (load_image(_path, "bullet-icon-full.png"), (70, 35)),
-            (load_image(_path, "bullet-icon-empty.jpg"), (70, 35)),
+            (load_image(path_, "gui-background.jpg"), (20, SCR_HEIGHT - 140)),
+            (load_image(path_, "tank0avatar.png"), tank_avatar_offset),
+            (load_image(path_, "bullet-icon-full.png"), bullet_offset),
+            (load_image(path_, "bullet-icon-empty.png"), bullet_offset),
         ]
         self.gui_textures[self.player2_name] = [
-            (load_image(_path, "gui_background.jpg"), (SCR_WIDTH-(40 + 300), 40)),
-            (load_image(_path, "tank1avatar.png"), (20, 25)),
-            (load_image(_path, "bullet-icon-full.png"), (70, 35)),
-            (load_image(_path, "bullet-icon-empty.jpg"), (70, 35)),
+            (load_image(path_, "gui-background.jpg"), (SCR_WIDTH-(40 + 280), SCR_HEIGHT - 140)),
+            (load_image(path_, "tank1avatar.png"), tank_avatar_offset),
+            (load_image(path_, "bullet-icon-full.png"), bullet_offset),
+            (load_image(path_, "bullet-icon-empty.png"), bullet_offset),
         ]
 
 
@@ -134,12 +171,11 @@ class FpsRenderSystem:
         self.font = pygame.font.SysFont(None, self.font_size)
         self.color = (200, 140, 0)
         self.fps_counter_pos = (10, 10)
-        self.fps_period = 1  # how often to refresh fps
+        self.fps_period = 1  # how often to refresh fps (in seconds)
         self.fps_time_left = 0
         self.fps_tmp_curr_val = 0
 
     def update(self, dt):
-
         if self.fps_time_left <= 0 and dt != 0:
             self.fps_tmp_curr_val = int(round(1 / dt, 0))
             self.fps_time_left = self.fps_period

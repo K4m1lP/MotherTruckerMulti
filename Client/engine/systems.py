@@ -399,14 +399,12 @@ class WeaponSystem:
                         self.entity_factory.create_bullet(pos_comp.pos + (pos_comp.orient * 95),
                                                           bullet_orient,
                                                           shot_comp.bullet_speed, entity)
-                        # pygame.mixer.Sound.play(self.shot_sound)
                         shot_comp.last_time_shot = get_time() * 1e-9
 
                 if con_comp.player.keys[mine]:
                     time_since_last_mine = (get_time() * 1e-9) - shot_comp.last_time_mine
                     if time_since_last_mine > shot_comp.reload_mine_time:
                         self.entity_factory.create_mine(pos_comp.pos, entity)
-                        # pygame.mixer.Sound.play(self.shot_sound)
                         shot_comp.last_time_mine = get_time() * 1e-9
 
 
@@ -485,8 +483,8 @@ class GameStateSystem:
             health_comp = self.entity_manager.get_component_of_class(HealthComponent(), ent)
             if health_comp:
                 if health_comp.curr_hp <= 0:
+                    self.state.looser = control_comp.player.nick
                     self.state.has_ended = True
-                    self.state.winner = control_comp.player.nick
 
     def save_hp(self):
         entities = self.entity_manager.get_all_entities_possessing_component_of_class(HealthComponent())
