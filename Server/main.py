@@ -21,7 +21,7 @@ HEADER = 10
 CONNECTED_PEOPLE = []
 WANT_TO_PLAY = [False, False]
 THREADS = []
-PER = 1
+PER = 3
 if DATA_BASE:
     DB = db_manager
 else:
@@ -42,10 +42,8 @@ def terminate_thread(thread):
     res = ctypes.pythonapi.PyThreadState_SetAsyncExc(
         ctypes.c_long(thread.ident), exc)
     if res == 0:
-        raise ValueError("nonexistent thread id")
+        raise ValueError("Nonexistent thread id")
     elif res > 1:
-        # """if it returns a number greater than one, you're in trouble,
-        # and you should call it again with exc=NULL to revert the effect"""
         ctypes.pythonapi.PyThreadState_SetAsyncExc(thread.ident, None)
         raise SystemError("PyThreadState_SetAsyncExc failed")
 
@@ -104,14 +102,12 @@ def game():
     global game_state
     global CONNECTED_PEOPLE
     global THREADS
-    # POBRAC NICKI
     player1 = Player("player1")
     player2 = Player("player2")
     engine = GameEngine(player1, player2)
     flag = True
     index = 0
     dt = 1 / 60
-    end_frame_time = 0
     start_frame_time = get_time()
     print("GAME")
     end_time = None
@@ -121,7 +117,7 @@ def game():
         for i in range(len(CONNECTED_PEOPLE)):
             try:
                 keys[i] = recv_data_on_open_socket(CONNECTED_PEOPLE[i])
-            except socket.error as er:
+            except socket.error:
                 keys[i] = None
 
         game_state = engine.update(dt, keys[0], keys[1])

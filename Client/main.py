@@ -22,7 +22,7 @@ client = network.Client()
 DISCONNECT_MSG = "!DISCONNECT"
 
 
-def switch_scene(ch):
+def switch_scene():
     if change == "menu":
         return MenuScene(game_window)
     if change == "waiting_scene":
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     # init display
     pygame.init()
     game_window = pygame.display.set_mode((SCR_WIDTH, SCR_HEIGHT))
-    pygame.display.set_caption("MotherTracker")
+    pygame.display.set_caption("MotherTrucker")
 
     # init closing conditions and time calculation
     should_close = False
@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
         change = events_manager.get_scene_change()
         if change:
-            current_scene = switch_scene(change)
+            current_scene = switch_scene()
 
         end_time = get_time()
         dt = (end_time - start_time) * 1e-9

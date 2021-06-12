@@ -25,7 +25,7 @@ class SingleGameScene(Scene):
         self.images = {}
         self.does_menu = False
         self.menu = pygame_menu.Menu(title="Game menu", height=250, width=500, theme=pygame_menu.themes.THEME_DARK)
-        self.menu.add.button("Quit", exit_fun, self.events)
+        self.menu.add.button("Quit", exit_fun, self.event_manager)
         pl1 = Player("player1")
         pl2 = Player("player2")
         self.engine = GameEngine(pl1, pl2)
@@ -43,8 +43,8 @@ class SingleGameScene(Scene):
             self.end_time = get_time()
         if self.end_time and (get_time()-self.end_time) * 1e-9 >= 1:
             game_state.should_exit = True
-            self.events.add_scene_change("game_over_scene")
-            self.events.set_winner(game_state.winner)
+            self.event_manager.add_scene_change("game_over_scene")
+            self.event_manager.set_winner(game_state.winner)
             return
 
         self.render_all(game_state.to_render, dt)
@@ -87,7 +87,7 @@ class SingleGameScene(Scene):
                 if sprite.size and not sprite.fixed_size:
                     image = pygame.transform.scale(image, sprite.size)
                 if not sprite.fixed_orient:
-                    image = pygame.transform.rotate(image, sprite.orient.get_angle())
+                    image = pygame.transform.rotate(image, sprite.orient.to_angle_degrees())
                 # render
                 render_pos = (int(x - image.get_width() / 2), int(y - image.get_height() / 2))
                 self.window.blit(image, render_pos)

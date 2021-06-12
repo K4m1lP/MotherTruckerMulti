@@ -8,7 +8,7 @@ class HistoryScene(Scene):
 
     def __init__(self, window):
         super().__init__(window)
-        self.menu = create_history_view(self.client, self.events)
+        self.menu = create_history_view(self.client, self.event_manager)
 
     def draw(self, events):
         if self.menu.is_enabled():

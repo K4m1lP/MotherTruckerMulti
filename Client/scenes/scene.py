@@ -1,4 +1,3 @@
-
 import pygame_menu
 
 
@@ -12,7 +11,7 @@ class Scene:
     def __init__(self, window):
         self.window = window
         self.client = Client.get_instance()
-        self.events = EventManager.get_instance()
+        self.event_manager = EventManager.get_instance()
 
 
 

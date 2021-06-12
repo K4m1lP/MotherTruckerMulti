@@ -7,7 +7,7 @@ from settings import SCR_WIDTH, SCR_HEIGHT
 class GameOverScene(Scene):
     def __init__(self, window):
         super().__init__(window)
-        self.menu = create_game_over_view(self.client, self.events)
+        self.menu = create_game_over_view(self.client, self.event_manager)
 
     def draw(self, events):
         if self.menu.is_enabled():

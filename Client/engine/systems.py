@@ -49,15 +49,15 @@ class IntegratingSystem:
             pos_comp = self.entity_manager.get_component_of_class(PositionComponent(), entity)
 
             # acceleration
-            acc = dynamics_comp.force.scale(dynamics_comp.inverse_mass)
+            acc = dynamics_comp.force * dynamics_comp.inverse_mass
 
             # velocity
-            dynamics_comp.vel = dynamics_comp.vel.add(acc.scale(dt))
+            dynamics_comp.vel = dynamics_comp.vel + (acc * dt)
             if dynamics_comp.vel.length() < self.tolerance and acc.length() < self.tolerance:
                 dynamics_comp.vel = Vec2d(0, 0)
 
             # position
-            pos_comp.pos = pos_comp.pos.add(dynamics_comp.vel.scale(dt))
+            pos_comp.pos = pos_comp.pos + (dynamics_comp.vel * dt)
             hb_comp = self.entity_manager.get_component_of_class(HitboxComponent(), entity)
             hb_comp.is_dirty = True
 
@@ -108,11 +108,11 @@ class ControlSystem:
 
                 engine_force = Vec2d(0, 0)
                 if control_comp.player.keys[forward]:
-                    engine_force = engine_force.add(pos_comp.orient.scale(control_comp.engine_acc_forward))
+                    engine_force = engine_force + (pos_comp.orient * control_comp.engine_acc_forward)
                 if control_comp.player.keys[backward]:
-                    engine_force = engine_force.add(pos_comp.orient.scale(control_comp.engine_acc_backward * (-1)))
+                    engine_force = engine_force + (pos_comp.orient * control_comp.engine_acc_backward * (-1))
 
-                dynamics_comp.force = dynamics_comp.force.add(engine_force)
+                dynamics_comp.force = dynamics_comp.force + engine_force
 
 
 class HitboxSystem:
@@ -134,7 +134,7 @@ class HitboxSystem:
 
             if hb_comp.is_dirty:
                 pos_comp = self.entity_manager.get_component_of_class(PositionComponent(), entity)
-                angle = pos_comp.orient.get_angle_normalnie()
+                angle = pos_comp.orient.to_angle_radians()
                 poly = deepcopy(hb_comp.vertices)
                 pos = deepcopy(pos_comp.pos)
 
@@ -166,7 +166,7 @@ class CollisionDetectionSystem:
             for edge in range(len(polys[p])):  # for each edge..
 
                 # apply separated axis theorem
-                edge_vec = polys[p][(edge + 1) % len(polys[p])].add(polys[p][edge].scale((-1)))
+                edge_vec = polys[p][(edge + 1) % len(polys[p])] + (polys[p][edge] * -1)
                 perp_to_edge_vec = edge_vec.get_perp()
                 perp_to_edge_vec.normalize()
                 norm_to_the_edge = perp_to_edge_vec
@@ -194,9 +194,9 @@ class CollisionDetectionSystem:
 
         # COLLISION OCCURRED, STATICALLY RESOLVING BY DISPLACING
         if inv_masses[0] > inv_masses[1]:  # first is lighter
-            pos_c[0].pos = pos_c[0].pos.add(pen.scale(pen_deepness))
+            pos_c[0].pos += pen * pen_deepness
         elif inv_masses[1] > 0:
-            pos_c[1].pos = pos_c[1].pos.add(pen.scale(-pen_deepness))
+            pos_c[1].pos += pen * pen_deepness * -1
 
         return True
 
@@ -262,8 +262,6 @@ class CollisionResolveSystem:
         self.entity_manager = entity_manager
         self.entity_factory = entity_factory
         self.collision_manager = CollisionManager.get_instance()
-        # self.hit_sound = pygame.mixer.Sound(os.path.join('assets/sounds/', 'hit.mp3'))
-        # self.hit_sound.set_volume(0.3)
 
     def update(self, dt):
         collisions = self.collision_manager.get_collisions()
@@ -292,7 +290,6 @@ class CollisionResolveSystem:
                     dmg = hit_comp1.dmg
                     # ent1 is exploding
                     self.entity_factory.create_explosion(pos_comp1.pos)
-                    # pygame.mixer.Sound.play(self.hit_sound)
                     self.entity_manager.remove_entity(ent1)
                     if health_comp2:
                         health_comp2.last_time_hit = get_time()
@@ -300,13 +297,7 @@ class CollisionResolveSystem:
                         if health_comp2.curr_hp - dmg <= 0:
                             health_comp2.curr_hp = 0
                             self.entity_factory.create_explosion(pos_comp2.pos, (200, 200))
-                            # pygame.mixer.Sound.play(self.hit_sound)
-                            # pygame.mixer.Sound.play(self.hit_sound)
-                            # pygame.mixer.Sound.play(self.hit_sound)
-                            # self.entity_manager.remove_entity(ent2)
                             self.entity_manager.delete_component(RenderComponent(), ent2)
-                            # self.entity_manager.delete_component(HitboxComponent(), ent2)
-
                         else:
                             health_comp2.curr_hp -= dmg
                 continue
@@ -316,7 +307,6 @@ class CollisionResolveSystem:
                     dmg = hit_comp2.dmg
                     # ent2 is exploding
                     self.entity_factory.create_explosion(pos_comp2.pos)
-                    # pygame.mixer.Sound.play(self.hit_sound)
                     self.entity_manager.remove_entity(ent2)
                     if health_comp1:
                         health_comp1.last_time_hit = get_time()
@@ -324,12 +314,7 @@ class CollisionResolveSystem:
                         if health_comp1.curr_hp - dmg <= 0:
                             health_comp1.curr_hp = 0
                             self.entity_factory.create_explosion(pos_comp1.pos, (200, 200))
-                            # pygame.mixer.Sound.play(self.hit_sound)
-                            # pygame.mixer.Sound.play(self.hit_sound)
-                            # pygame.mixer.Sound.play(self.hit_sound)
-                            # self.entity_manager.remove_entity(ent1)
                             self.entity_manager.delete_component(RenderComponent(), ent1)
-                            # self.entity_manager.delete_component(HitboxComponent(), ent1)
                         else:
                             health_comp1.curr_hp -= dmg
                 continue
@@ -342,10 +327,10 @@ class CollisionResolveSystem:
 
             if dyn_comp1 and dyn_comp2 and hb_comp1 and hb_comp2 and pos_comp1 and pos_comp2:
                 if dyn_comp1.inverse_mass > dyn_comp2.inverse_mass:  # first is lighter
-                    pos_comp1.pos = pos_comp1.pos.add(col.pen_vec.scale(-1))
+                    pos_comp1.pos = pos_comp1.pos + (col.pen_vec * -1)
                     hb_comp1.is_dirty = True
                 elif dyn_comp2.inverse_mass > 0:
-                    pos_comp2.pos = pos_comp2.pos.add(col.pen_vec)
+                    pos_comp2.pos = pos_comp2.pos + col.pen_vec
                     hb_comp2.is_dirty = True
 
 
@@ -369,13 +354,13 @@ class ResistancesSystem:
             vel = dynamics_comp.vel
 
             # air drag
-            drag_force = vel.scale((-1) * self.drag * vel.length())
-            dynamics_comp.force = dynamics_comp.force.add(drag_force)
+            drag_force = vel * ((-1) * self.drag * vel.length())
+            dynamics_comp.force = dynamics_comp.force + drag_force
 
             # ground friction
             if pos_comp.z <= 1:  # if touches the ground
-                friction_force = vel.scale((-1) * self.ground_friction)
-                dynamics_comp.force = dynamics_comp.force.add(friction_force)
+                friction_force = vel * ((-1) * self.ground_friction)
+                dynamics_comp.force = dynamics_comp.force + friction_force
 
 
 class WeaponSystem:
@@ -411,7 +396,8 @@ class WeaponSystem:
                             max_angle = 2 / (math.pi * 2)
                             shot_angle = (random.random() * max_angle) - (max_angle / 2)
                         bullet_orient = pos_comp.orient.rotate(shot_angle)
-                        self.entity_factory.create_bullet(pos_comp.pos.add(pos_comp.orient.scale(95)), bullet_orient,
+                        self.entity_factory.create_bullet(pos_comp.pos + (pos_comp.orient * 95),
+                                                          bullet_orient,
                                                           shot_comp.bullet_speed, entity)
                         # pygame.mixer.Sound.play(self.shot_sound)
                         shot_comp.last_time_shot = get_time() * 1e-9

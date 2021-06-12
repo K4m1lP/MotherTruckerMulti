@@ -25,7 +25,7 @@ class GameScene(Scene):
         self.images = {}
         self.does_menu = False
         self.menu = pygame_menu.Menu(title="Game menu", height=250, width=500, theme=pygame_menu.themes.THEME_DARK)
-        self.menu.add.button("Quit", exit_fun, self.events)
+        self.menu.add.button("Quit", exit_fun, self.event_manager)
         self.score_tab = pygame_menu.Menu(title="Score tab", height=250, width=500, theme=pygame_menu.themes.THEME_DARK)
         self.score_tab.add.label("Your hp: ")
         self.score_tab.add.label("Opponent hp: ")
@@ -47,8 +47,8 @@ class GameScene(Scene):
 
             if game_state.should_exit:
                 self.client.block_socket()
-                self.events.add_scene_change("game_over_scene")
-                self.events.set_winner(game_state.winner)
+                self.event_manager.add_scene_change("game_over_scene")
+                self.event_manager.set_winner(game_state.winner)
                 return
 
         if self.obj:
@@ -95,18 +95,20 @@ class GameScene(Scene):
                 # if new, save to ram not to access disc every frame
                 image_name = sprite.img_name
                 if image_name not in self.images:
-                    self.images[image_name] = pygame.image.load(os.path.join('assets/images/textures/', image_name)).convert_alpha()
+                    self.images[image_name] = pygame.image.load(
+                        os.path.join('assets/images/textures/', image_name)).convert_alpha()
                     if sprite.size and sprite.fixed_size:
                         self.images[image_name] = pygame.transform.scale(self.images[image_name], sprite.size)
                 elif image_name == 'tile.png':
-                    self.images[image_name] = pygame.image.load(os.path.join('assets/images/textures/', image_name)).convert_alpha()
+                    self.images[image_name] = pygame.image.load(
+                        os.path.join('assets/images/textures/', image_name)).convert_alpha()
                     self.images[image_name] = pygame.transform.scale(self.images[image_name], sprite.size)
 
                 image = self.images[image_name]
                 if sprite.size and not sprite.fixed_size:
                     image = pygame.transform.scale(image, sprite.size)
                 if not sprite.fixed_orient:
-                    image = pygame.transform.rotate(image, sprite.orient.get_angle())
+                    image = pygame.transform.rotate(image, sprite.orient.to_angle_degrees())
                 # render
                 render_pos = (int(x - image.get_width() / 2), int(y - image.get_height() / 2))
                 self.window.blit(image, render_pos)
