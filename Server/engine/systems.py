@@ -457,6 +457,9 @@ class GameStateSystem:
 
         self.check_for_endgame()
 
+        # TODO insert current hp and if is reloaded
+
+
         # return ready state (for clients)
         return deepcopy(self.state)
 

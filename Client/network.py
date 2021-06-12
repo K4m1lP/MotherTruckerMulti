@@ -122,7 +122,7 @@ class Client:
         self.send_obj({"TYPE": "STAT_ASK"})
         return pickle.loads(self.client.recv(2048))
 
-    def get_game_status(self):
+    def get_game_state(self):
         try:
             msg1 = self.recv_data_on_open_socket()
         except socket.error as e:

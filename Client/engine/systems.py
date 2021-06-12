@@ -327,7 +327,7 @@ class CollisionResolveSystem:
 
             if dyn_comp1 and dyn_comp2 and hb_comp1 and hb_comp2 and pos_comp1 and pos_comp2:
                 if dyn_comp1.inverse_mass > dyn_comp2.inverse_mass:  # first is lighter
-                    pos_comp1.pos = pos_comp1.pos + (col.pen_vec * -1)
+                    pos_comp1.pos = pos_comp1.pos + col.pen_vec * -1
                     hb_comp1.is_dirty = True
                 elif dyn_comp2.inverse_mass > 0:
                     pos_comp2.pos = pos_comp2.pos + col.pen_vec
@@ -354,7 +354,7 @@ class ResistancesSystem:
             vel = dynamics_comp.vel
 
             # air drag
-            drag_force = vel * ((-1) * self.drag * vel.length())
+            drag_force = vel * (-1) * self.drag * vel.length()
             dynamics_comp.force = dynamics_comp.force + drag_force
 
             # ground friction

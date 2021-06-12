@@ -7,7 +7,7 @@ from time import time_ns as get_time
 from scenes.scene import Scene
 
 
-class GameScene(Scene):
+class MultiGameScene(Scene):
     def __init__(self, window):
         super().__init__(window)
         self.client.unlock_socket()
@@ -41,7 +41,7 @@ class GameScene(Scene):
         if is_changed:
             self.client.send_key(self.pressed_keys)
 
-        game_state = self.client.get_game_status()
+        game_state = self.client.get_game_state()
         if game_state:
             self.obj = game_state.to_render
 
@@ -55,8 +55,6 @@ class GameScene(Scene):
             self.render_all(self.obj, dt)
 
         if self.does_menu and not self.pressed_keys[pygame.K_TAB]:
-            # tmp delete
-            # self.window.blit(self.surface, (0, 0))
             if self.menu.is_enabled():
                 self.menu.update(events)
                 self.menu.draw(self.window)

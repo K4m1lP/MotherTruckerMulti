@@ -5,7 +5,7 @@ from event_manager import EventManager
 from scenes.account_scene import AccountScene
 from scenes.change_scene import ChangeScene
 from scenes.game_over_scene import GameOverScene
-from scenes.game_scene import GameScene
+from scenes.multi_game_scene import MultiGameScene
 from scenes.history_scene import HistoryScene
 from scenes.login_scene import LoginScene
 from scenes.menu_scene import MenuScene
@@ -28,7 +28,7 @@ def switch_scene():
     if change == "waiting_scene":
         return WaitingScene(game_window)
     if change == "game":
-        return GameScene(game_window)
+        return MultiGameScene(game_window)
     if change == "login":
         return LoginScene(game_window)
     if change == "account":
