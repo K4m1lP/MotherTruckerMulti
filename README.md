@@ -1,6 +1,6 @@
 # MotherTrucker
 
-Celem projektu jest stworzenie dwuwymiarowej gry o walce czołgami w widoku z lotu ptaka.
+2D game about fighting tanks. NAvailable for multi- or single-player.
 
 ## Autorzy
 
