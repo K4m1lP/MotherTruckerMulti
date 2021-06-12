@@ -101,7 +101,7 @@ class EntityFactory:
     def create_bullet(self, pos, orient, speed, owner_id):
         entity = self._entity_manager.create_entity("pocisk")
         self._entity_manager.add_component(PositionComponent(pos=pos, orient=orient, z=2), entity)
-        self._entity_manager.add_component(DynamicsComponent(vel=orient.scale(speed), mass=1), entity)
+        self._entity_manager.add_component(DynamicsComponent(vel=orient * speed, mass=1), entity)
         self._entity_manager.add_component(RenderComponent('bullet.png', None, False, True), entity)
         self._entity_manager.add_component(HitComponent(250, owner_id), entity)
         self._entity_manager.add_component(HitboxComponent((30, 17)), entity)
@@ -178,6 +178,7 @@ class EntityFactory:
                     self.create_tile(Vec2d(tile_size / 2 + tile_size * (j+1), tile_size / 2 + tile_size * (i+1)), tile_size, tile_size)
         file.close()
 
+
     def create_default_obstacles(self):
         self.create_tile(Vec2d(SCR_WIDTH / 2, SCR_HEIGHT / 2),
                          50, int(SCR_HEIGHT / 2))
@@ -185,6 +186,7 @@ class EntityFactory:
                          int(SCR_WIDTH / 4), 50)
         self.create_tile(Vec2d(SCR_WIDTH / 2 - 25 + int(SCR_WIDTH / 8), SCR_HEIGHT / 4 * 3),
                          int(SCR_WIDTH / 4), 50)
+
 
 class Collision:
     def __init__(self, ent1, ent2, pen_length, pen_vec):

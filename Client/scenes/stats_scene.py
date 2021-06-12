@@ -1,6 +1,6 @@
 import pygame_menu
 
-from Scenes.Scene import Scene
+from scenes.scene import Scene
 from settings import SCR_HEIGHT, SCR_WIDTH
 
 
@@ -8,7 +8,7 @@ class StatsScene(Scene):
 
     def __init__(self, window):
         super().__init__(window)
-        self.menu = create_stats_view(self.events, self.client)
+        self.menu = create_stats_view(self.event_manager, self.client)
 
     def draw(self, events):
         if self.menu.is_enabled():

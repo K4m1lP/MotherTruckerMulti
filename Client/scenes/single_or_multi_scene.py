@@ -1,13 +1,13 @@
 import pygame_menu
 
-from Scenes.Scene import Scene
+from scenes.scene import Scene
 from settings import SCR_WIDTH, SCR_HEIGHT
 
 
 class SingleOrMultiScene(Scene):
     def __init__(self, window):
         super().__init__(window)
-        self.menu = create_single_or_multi_view(self.client, self.events)
+        self.menu = create_single_or_multi_view(self.event_manager)
 
     def draw(self, events):
         if self.menu.is_enabled():
@@ -15,7 +15,7 @@ class SingleOrMultiScene(Scene):
             self.menu.draw(self.window)
 
 
-def create_single_or_multi_view(client, events):
+def create_single_or_multi_view(events):
     menu = pygame_menu.Menu('Mother Trucker', SCR_WIDTH, SCR_HEIGHT, theme=pygame_menu.themes.THEME_DARK)
     menu.add.button('Single', single_function, events)
     menu.add.button('Multi', multi_function, events)

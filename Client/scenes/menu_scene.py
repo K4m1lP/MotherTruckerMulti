@@ -1,6 +1,6 @@
 import pygame_menu
 
-from Scenes.Scene import Scene
+from scenes.scene import Scene
 from settings import SCR_WIDTH, SCR_HEIGHT
 
 
@@ -8,7 +8,7 @@ class MenuScene(Scene):
 
     def __init__(self, window):
         super().__init__(window)
-        self.menu = create_menu_view(self.client, self.events)
+        self.menu = create_menu_view(self.client, self.event_manager)
 
     def draw(self, events):
         if self.menu.is_enabled():

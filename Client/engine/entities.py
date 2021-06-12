@@ -102,7 +102,7 @@ class EntityFactory:
     def create_bullet(self, pos, orient, speed, owner_id):
         entity = self._entity_manager.create_entity("pocisk")
         self._entity_manager.add_component(PositionComponent(pos=pos, orient=orient, z=2), entity)
-        self._entity_manager.add_component(DynamicsComponent(vel=orient.scale(speed), mass=1), entity)
+        self._entity_manager.add_component(DynamicsComponent(vel=orient * speed, mass=1), entity)
         self._entity_manager.add_component(RenderComponent('bullet.png', None, False, True), entity)
         self._entity_manager.add_component(HitComponent(250, owner_id), entity)
         self._entity_manager.add_component(HitboxComponent((30, 17)), entity)

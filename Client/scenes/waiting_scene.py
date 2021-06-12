@@ -1,4 +1,4 @@
-from Scenes.Scene import Scene
+from scenes.scene import Scene
 
 
 class WaitingScene(Scene):
@@ -11,5 +11,5 @@ class WaitingScene(Scene):
         # self.window.blit(gif, (SCR_WIDTH / 2 - (gif.get_width() / 2), SCR_HEIGHT / 2 - (gif.get_height() / 2)))
         second_player = self.client.is_second_connected()
         if second_player:
-            self.events.add_scene_change("game")
+            self.event_manager.add_scene_change("game")
 
