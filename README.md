@@ -5,5 +5,5 @@
 ## Autorzy
 
 - Kamil Pluciński <pkamil259@gmail.com>
-- Tomasz Koszarek <>
+- Tomasz Koszarek <tomtomkins91@gmail.com>
 
