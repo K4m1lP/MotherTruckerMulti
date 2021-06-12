@@ -1,6 +1,6 @@
 # MotherTrucker
 
-2D game about fighting tanks. NAvailable for multi- or single-player.
+2D game about fighting tanks. Available for multi- or single-player.
 
 ## Autorzy
 
