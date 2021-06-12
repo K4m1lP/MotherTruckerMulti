@@ -4,7 +4,7 @@ import pygame
 import pygame_menu
 from time import time_ns as get_time
 
-from scenes.scene import Scene
+from Scenes.scene import Scene
 
 
 class MultiGameScene(Scene):

@@ -65,6 +65,10 @@ class GameState:
         self.winner = None
         self.frame_time = None
         self.should_exit = False
+        self.curr_hp = {}
+        self.max_hp = {}
+        self.shot_ready = {}
+        self.mine_ready = {}
 
 
 class Sprite:

@@ -3,8 +3,8 @@ import os
 import pygame
 import pygame_menu
 from time import time_ns as get_time
-
-from scenes.scene import Scene
+from settings import SCR_HEIGHT, SCR_WIDTH
+from Scenes.scene import Scene
 from engine.game_engine import GameEngine
 from utils import Player
 
@@ -12,6 +12,8 @@ from utils import Player
 class SingleGameScene(Scene):
     def __init__(self, window):
         super().__init__(window)
+        self.player1_name = "player1"
+        self.player2_name = "player2"
         self.game_keys = [pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_SPACE,
                           pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT,
                           pygame.K_KP0, pygame.K_KP1, pygame.K_f, pygame.K_ESCAPE,
@@ -23,12 +25,12 @@ class SingleGameScene(Scene):
         for key in self.game_keys:
             self.prev_pressed_keys[key] = False
         self.images = {}
+        self.gui_textures = {self.player1_name: [], self.player2_name: []}
+        self.init_gui_textures()
         self.does_menu = False
         self.menu = pygame_menu.Menu(title="Game menu", height=250, width=500, theme=pygame_menu.themes.THEME_DARK)
         self.menu.add.button("Quit", exit_fun, self.event_manager)
-        pl1 = Player("player1")
-        pl2 = Player("player2")
-        self.engine = GameEngine(pl1, pl2)
+        self.engine = GameEngine(Player(self.player1_name), Player(self.player2_name))
         self.end_time_frame_ended = get_time()
         self.fps_sys = FpsRenderSystem(window)
         self.end_time = None
@@ -48,6 +50,8 @@ class SingleGameScene(Scene):
             return
 
         self.render_all(game_state.to_render, dt)
+
+        self.render_gui(game_state)
 
         if self.does_menu and not self.pressed_keys[pygame.K_TAB]:
             if self.menu.is_enabled():
@@ -92,6 +96,31 @@ class SingleGameScene(Scene):
                 render_pos = (int(x - image.get_width() / 2), int(y - image.get_height() / 2))
                 self.window.blit(image, render_pos)
         self.fps_sys.update(dt)
+
+    def render_gui(self, game_state):
+        if game_state:
+            background1 = self.gui_textures[self.player1_name]
+            self.window.blit(background1[0], background1[1])
+
+
+    def init_gui_textures(self):
+        def load_image(_path, name):
+            return pygame.image.load(os.path.join(_path, name)).convert_alpha()
+
+        _path = 'assets/images/textures/'
+
+        self.gui_textures[self.player1_name] = [
+            (load_image(_path, "gui_background.jpg"), (40, 40)),
+            (load_image(_path, "tank0avatar.png"), (20, 25)),
+            (load_image(_path, "bullet-icon-full.png"), (70, 35)),
+            (load_image(_path, "bullet-icon-empty.jpg"), (70, 35)),
+        ]
+        self.gui_textures[self.player2_name] = [
+            (load_image(_path, "gui_background.jpg"), (SCR_WIDTH-(40 + 300), 40)),
+            (load_image(_path, "tank1avatar.png"), (20, 25)),
+            (load_image(_path, "bullet-icon-full.png"), (70, 35)),
+            (load_image(_path, "bullet-icon-empty.jpg"), (70, 35)),
+        ]
 
 
 def exit_fun(events):

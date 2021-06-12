@@ -2,19 +2,19 @@ import pygame
 import network
 from time import time_ns as get_time
 from event_manager import EventManager
-from scenes.account_scene import AccountScene
-from scenes.change_scene import ChangeScene
-from scenes.game_over_scene import GameOverScene
-from scenes.multi_game_scene import MultiGameScene
-from scenes.history_scene import HistoryScene
-from scenes.login_scene import LoginScene
-from scenes.menu_scene import MenuScene
-from scenes.server_scene import ServerScene
-from scenes.setting_scene import SettingScene
-from scenes.single_game_scene import SingleGameScene
-from scenes.single_or_multi_scene import SingleOrMultiScene
-from scenes.stats_scene import StatsScene
-from scenes.waiting_scene import WaitingScene
+from Scenes.account_scene import AccountScene
+from Scenes.change_scene import ChangeScene
+from Scenes.game_over_scene import GameOverScene
+from Scenes.multi_game_scene import MultiGameScene
+from Scenes.history_scene import HistoryScene
+from Scenes.login_scene import LoginScene
+from Scenes.menu_scene import MenuScene
+from Scenes.server_scene import ServerScene
+from Scenes.setting_scene import SettingScene
+from Scenes.single_game_scene import SingleGameScene
+from Scenes.single_or_multi_scene import SingleOrMultiScene
+from Scenes.stats_scene import StatsScene
+from Scenes.waiting_scene import WaitingScene
 from settings import SCR_HEIGHT, SCR_WIDTH
 
 
