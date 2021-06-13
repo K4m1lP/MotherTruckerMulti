@@ -22,15 +22,15 @@ class SingleGameScene(Scene):
         self.images = {}
         self.gui_textures = {self.player1_name: [], self.player2_name: []}
         self.init_gui_textures()
+        self.player_name_font_size = 30
+        self.player_name_font = pygame.font.SysFont(None, self.player_name_font_size)
         self.does_menu = False
         self.menu = pygame_menu.Menu(title="Game menu", height=250, width=500, theme=pygame_menu.themes.THEME_DARK)
-        self.menu.add.button("Quit", exit_fun, self.event_manager)
+        self.menu.add.button("Quit", switch_to_menu, self.event_manager)
         self.engine = GameEngine(Player(self.player1_name), Player(self.player2_name))
         self.end_time_frame_ended = get_time()
         self.fps_sys = FpsRenderSystem(window)
         self.end_time = None
-        self.player_name_font_size = 30
-        self.player_name_font = pygame.font.SysFont(None, self.player_name_font_size)
 
     def draw(self, events):
         dt = (get_time() - self.end_time_frame_ended) * 1e-9
@@ -98,44 +98,43 @@ class SingleGameScene(Scene):
         self.fps_sys.update(dt)
 
     def render_gui(self, game_state):
-        if game_state:
-            for player in [self.player1_name, self.player2_name]:
-                gui_elements = self.gui_textures[player]
-                bg_pos = gui_elements[0][1]
-                # background
-                self.window.blit(*gui_elements[0])
-                # tank-avatar
-                self.window.blit(gui_elements[1][0], (gui_elements[1][1][0] + bg_pos[0],
-                                                      gui_elements[1][1][1] + bg_pos[1]))
-                # bullet-icon
-                if game_state.shot_ready[player]:
-                    self.window.blit(gui_elements[2][0], (gui_elements[2][1][0] + bg_pos[0],
-                                                          gui_elements[2][1][1] + bg_pos[1]))
-                else:
-                    self.window.blit(gui_elements[3][0], (gui_elements[3][1][0] + bg_pos[0],
-                                                          gui_elements[3][1][1] + bg_pos[1]))
-                # hp full bar
-                length = 170
-                thickness = 60
-                start_offset = (105, 70)
-                start_point = [bg_pos[0] + start_offset[0], bg_pos[1] + start_offset[1]]
-                end_point = [bg_pos[0] + start_offset[0] + length, bg_pos[1] + start_offset[1]]
-                pygame.draw.line(self.window, pygame.color.Color(190, 150, 0), start_point, end_point, thickness)
-                # hp current bar
-                if game_state.curr_hp[player] == 0: continue
-                hp_normalized = game_state.curr_hp[player] / game_state.max_hp[player]
-                start_point[0] += 5
-                end_point[0] = bg_pos[0] + start_offset[0] + length * hp_normalized
-                end_point[0] -= 5
-                thickness = 50
-                pygame.draw.line(self.window, pygame.color.Color(140, 100, 0), start_point, end_point, thickness)
-                # names
-                if player == self.player1_name:
-                    img = self.player_name_font.render(self.player1_name, True, (0, 0, 0))
-                    self.window.blit(img, (bg_pos[0] + 110, bg_pos[1] + 14))
-                else:
-                    img = self.player_name_font.render(self.player2_name, True, (0, 0, 0))
-                    self.window.blit(img, (bg_pos[0] + 110, bg_pos[1] + 14))
+        for player in [self.player1_name, self.player2_name]:
+            gui_elements = self.gui_textures[player]
+            bg_pos = gui_elements[0][1]
+            # background
+            self.window.blit(*gui_elements[0])
+            # tank-avatar
+            self.window.blit(gui_elements[1][0], (gui_elements[1][1][0] + bg_pos[0],
+                                                  gui_elements[1][1][1] + bg_pos[1]))
+            # bullet-icon
+            if game_state.shot_ready[player]:
+                self.window.blit(gui_elements[2][0], (gui_elements[2][1][0] + bg_pos[0],
+                                                      gui_elements[2][1][1] + bg_pos[1]))
+            else:
+                self.window.blit(gui_elements[3][0], (gui_elements[3][1][0] + bg_pos[0],
+                                                      gui_elements[3][1][1] + bg_pos[1]))
+            # hp full bar
+            length = 170
+            thickness = 60
+            start_offset = (105, 70)
+            start_point = [bg_pos[0] + start_offset[0], bg_pos[1] + start_offset[1]]
+            end_point = [bg_pos[0] + start_offset[0] + length, bg_pos[1] + start_offset[1]]
+            pygame.draw.line(self.window, pygame.color.Color(190, 150, 0), start_point, end_point, thickness)
+            # hp current bar
+            if game_state.curr_hp[player] == 0: continue
+            hp_normalized = game_state.curr_hp[player] / game_state.max_hp[player]
+            start_point[0] += 5
+            end_point[0] = bg_pos[0] + start_offset[0] + length * hp_normalized
+            end_point[0] -= 5
+            thickness = 50
+            pygame.draw.line(self.window, pygame.color.Color(140, 100, 0), start_point, end_point, thickness)
+            # names
+            if player == self.player1_name:
+                img = self.player_name_font.render(self.player1_name, True, (0, 0, 0))
+                self.window.blit(img, (bg_pos[0] + 110, bg_pos[1] + 14))
+            else:
+                img = self.player_name_font.render(self.player2_name, True, (0, 0, 0))
+                self.window.blit(img, (bg_pos[0] + 110, bg_pos[1] + 14))
 
     def init_gui_textures(self):
         def load_image(p, name):
@@ -160,8 +159,8 @@ class SingleGameScene(Scene):
         ]
 
 
-def exit_fun(events):
-    events.exit_event = True
+def switch_to_menu(ev_manager):
+    ev_manager.add_scene_change("single_or_multi_scene")
 
 
 class FpsRenderSystem:

@@ -469,11 +469,10 @@ class GameStateSystem:
 
         self.check_for_endgame()
 
-        # return ready state (for clients)
-        # =======================================================================================
         self.save_hp()
-        self.check_weapon()
-        # =======================================================================================
+
+        self.check_reloads()
+
         return deepcopy(self.state)
 
     def check_for_endgame(self):
@@ -495,7 +494,7 @@ class GameStateSystem:
                 self.state.curr_hp[control_comp.player.nick] = health_comp.curr_hp
                 self.state.max_hp[control_comp.player.nick] = health_comp.max_hp
 
-    def check_weapon(self):
+    def check_reloads(self):
         entities = self.entity_manager.get_all_entities_possessing_component_of_class(ShootingComponent())
         for ent in entities:
             shooting_comp = self.entity_manager.get_component_of_class(ShootingComponent(), ent)

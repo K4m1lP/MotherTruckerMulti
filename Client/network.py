@@ -98,7 +98,6 @@ class Client:
         try:
             msg = self.recv_data_on_open_socket()
         except socket.error as e:
-            # print(e)
             return None
         else:
             print(msg["RES"])
@@ -137,7 +136,9 @@ class Client:
         self.client.setblocking(False)
 
     def close_connection(self):
-        print("we should do some exit stuff here, we are in network exit callback")
+        self.send_obj({"TYPE": "DISCONNECT"})
+        self.send_obj({"TYPE": "DISCONNECT"})
+
 
     def change_password(self, nick, password, new_nick, new_password):
         if not nick or not password:

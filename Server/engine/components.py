@@ -18,7 +18,7 @@ class PositionComponent:
 
 
 class ShootingComponent:
-    def __init__(self, reload_time=0.5, bullet_speed=700, reload_mine_time=1):
+    def __init__(self, reload_time=1.4, bullet_speed=700, reload_mine_time=1):
         self.reload_time = reload_time  # in seconds
         self.reload_mine_time = reload_mine_time
         self.bullet_speed = bullet_speed  # initial bullet speed
@@ -44,7 +44,7 @@ class DynamicsComponent:
 
 
 class HealthComponent:
-    def __init__(self, curr_hp=1000, max_hp=1000):
+    def __init__(self, curr_hp=22000, max_hp=2000):
         self.curr_hp = curr_hp
         self.max_hp = max_hp
         self.last_time_hit = 0

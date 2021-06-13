@@ -1,6 +1,5 @@
 from engine.entities import EntityManager, EntityFactory
 from engine.systems import PhysicsSystem, WeaponSystem, KeysUpdateSystem, GameStateSystem, AnimationSystem
-from settings import *
 
 
 class GameEngine:

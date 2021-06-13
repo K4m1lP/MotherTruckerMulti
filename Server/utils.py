@@ -61,9 +61,13 @@ class GameState:
     def __init__(self):
         self.to_render = []
         self.has_ended = False
-        self.winner = None
+        self.looser = None
         self.frame_time = None
         self.should_exit = False
+        self.curr_hp = {}
+        self.max_hp = {}
+        self.shot_ready = {}
+        self.mine_ready = {}
 
 
 class Sprite:

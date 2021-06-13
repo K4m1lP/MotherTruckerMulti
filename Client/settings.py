@@ -4,7 +4,7 @@ import pygame
 AVG_BULLET_DMG = 150
 
 SCR_WIDTH = 1400
-SCR_HEIGHT = 900
+SCR_HEIGHT = 800
 
 DEFAULT_EXPLOSION_SIZE = 100
 
@@ -18,9 +18,5 @@ GAME_KEYS = [pygame.K_a, pygame.K_d, pygame.K_w, pygame.K_s, pygame.K_SPACE,
 
 """
 MAIN CHANGES:
-- settings
-- systems: game state system
-- single game scene
 - some parameters in health component / shoot component
-
 """

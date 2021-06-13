@@ -457,10 +457,10 @@ class GameStateSystem:
 
         self.check_for_endgame()
 
-        # TODO insert current hp and if is reloaded
+        self.save_hp()
 
+        self.check_reloads()
 
-        # return ready state (for clients)
         return deepcopy(self.state)
 
     def check_for_endgame(self):
@@ -471,4 +471,24 @@ class GameStateSystem:
             if health_comp:
                 if health_comp.curr_hp <= 0:
                     self.state.has_ended = True
-                    self.state.winner = control_comp.player.nick
+                    self.state.looser = control_comp.player.nick
+
+    def save_hp(self):
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(HealthComponent())
+        for ent in entities:
+            health_comp = self.entity_manager.get_component_of_class(HealthComponent(), ent)
+            control_comp = self.entity_manager.get_component_of_class(ControlComponent(), ent)
+            if health_comp and control_comp:
+                self.state.curr_hp[control_comp.player.nick] = health_comp.curr_hp
+                self.state.max_hp[control_comp.player.nick] = health_comp.max_hp
+
+    def check_reloads(self):
+        entities = self.entity_manager.get_all_entities_possessing_component_of_class(ShootingComponent())
+        for ent in entities:
+            shooting_comp = self.entity_manager.get_component_of_class(ShootingComponent(), ent)
+            control_comp = self.entity_manager.get_component_of_class(ControlComponent(), ent)
+            if shooting_comp and control_comp:
+                shot_ready = (get_time()*1e-9 - shooting_comp.last_time_shot) >= shooting_comp.reload_time
+                mine_ready = (get_time()*1e-9 - shooting_comp.last_time_mine) >= shooting_comp.reload_mine_time
+                self.state.shot_ready[control_comp.player.nick] = shot_ready
+                self.state.mine_ready[control_comp.player.nick] = mine_ready
