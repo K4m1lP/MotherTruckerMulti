@@ -45,6 +45,9 @@ class MultiGameScene(Scene):
         if tmp_game_state:
             self.game_state = tmp_game_state
 
+        if not self.game_state:
+            return
+
         if self.game_state.should_exit:
             self.client.block_socket()
             self.event_manager.add_scene_change("game_over_scene")

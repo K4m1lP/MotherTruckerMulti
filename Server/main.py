@@ -11,12 +11,15 @@ from time import time_ns as get_time
 from engine.game_engine import GameEngine
 
 
-# yes, tey are global, we are sorry,
-# but that's what we're taught on Operating Systems
-# ok, it's not true but client-server architecture is hard and
-# we are exploring it from the basics
+"""
+Yes, tey are global, we are sorry,
+    we don't know how to deal with threading and networking
+    without using global variables.
+Client - server architecture is hard and full of zasadzkas
+"""
+
 SERVER_IP = '127.0.0.1'
-PORT = 2345
+PORT = 31415
 MAX_CONNECTED_PEOPLE = 2
 ADDR = (SERVER_IP, PORT)
 HEADER = 10
@@ -24,7 +27,7 @@ CONNECTED_PEOPLE = []
 WANT_TO_PLAY = [False, False]
 THREADS = []
 server_socket = None
-SENDING_PERIOD = 3  # how many frames skip
+SENDING_PERIOD = 4  # how many frames skip
 if DATABASE: DB = db_manager
 else: DB = db_mock
 
@@ -32,20 +35,21 @@ else: DB = db_mock
 # helper server functions
 def recv_data_on_open_socket(client):
     result = None
+    msg_len = 0
     full_msg = b''
     new_msg = True
-    flag = False
-    while not flag:
+    is_received = False
+    while not is_received:
         msg = client.recv(16)
         if new_msg:
-            msglen = int(msg[:HEADER])
+            msg_len = int(msg[:HEADER])
             new_msg = False
         full_msg += msg
-        if len(full_msg) - HEADER == msglen:
+        if len(full_msg) - HEADER == msg_len:
             result = pickle.loads(full_msg[HEADER:])
-            flag = True
+            is_received = True
             new_msg = True
-            full_msg = b""
+            full_msg = b''
     return result
 def send_data_on_open_socket(client, data):
     success = True
@@ -88,17 +92,16 @@ def threaded_client(conn, current_player):
             b = conn.recv(2048)
             my_type = pickle.loads(a)
             data = pickle.loads(b)
-            print(my_type)
-            print(data)
+            # print(my_type)
+            # print(data)
             type_str = my_type["TYPE"]
             if type_str == "LOGIN":
                 user = DB.login(data["nick"], data["password"])
                 send(conn, {"USER_ID": True})
             elif type_str == "WANT_PLAY":
                 WANT_TO_PLAY[current_player] = True
-                print("ended blocking communication with ", current_player)
                 unlock_socket(conn)
-                return
+                return True
             elif type_str == "HISTORY_ASK":
                 send(conn, DB.my_battle_history(user))
             elif type_str == "STAT_ASK":
@@ -109,7 +112,7 @@ def threaded_client(conn, current_player):
                 send(conn, DB.change_password(data["old_nick"], data["old_pass"], data["new_nick"], data["new_pass"]))
             elif type_str == "DISCONNECT":
                 print("Exiting client thread")
-                return
+                return False
         except socket.error as err:
             print("moj blad: ", err)
             break
@@ -172,9 +175,15 @@ def run_game():
         dt = (end_frame_time - start_frame_time) * 1e-9
         start_frame_time = get_time()
     return True
-def is_client_offline():
-    global WANT_TO_PLAY
-    return not (WANT_TO_PLAY[0] and WANT_TO_PLAY[1])
+def init_socket():
+    global server_socket
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        server_socket.bind(ADDR)
+        server_socket.listen(MAX_CONNECTED_PEOPLE)
+    except socket.error:
+        print("Failed to initialize the socket")
+        exit(1)
 def start_server():
     global WANT_TO_PLAY
     global CONNECTED_PEOPLE
@@ -192,35 +201,26 @@ def start_server():
         player_thread.start()
         THREADS.append(player_thread)
         n_active_clients += 1
+
         if n_active_clients == 2:
             while True:
                 time.sleep(1)
                 for th in THREADS:
                     th.join()
-                    if is_client_offline():
-                        return
-                data = {"RES": True}
-                for i in range(len(CONNECTED_PEOPLE)):
-                    send_data_on_open_socket(CONNECTED_PEOPLE[i], data)
-                clients_online = run_game()
-                if not clients_online:
+                if WANT_TO_PLAY[0] and WANT_TO_PLAY[1]:
+                    data = {"RES": True}
+                    for i in range(len(CONNECTED_PEOPLE)):
+                        send_data_on_open_socket(CONNECTED_PEOPLE[i], data)
+                    run_game()
+                else:
                     return
 
 
 if __name__ == '__main__':
     print("Starting server...")
     print("Server address: ", ADDR)
-    # init socket
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        server_socket.bind(ADDR)
-        server_socket.listen(MAX_CONNECTED_PEOPLE)
-    except socket.error as e:
-        print(str(e))
-        exit(1)
+    init_socket()
 
-    # run server
     start_server()
 
-    # cleanup
     server_socket.close()

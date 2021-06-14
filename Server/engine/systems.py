@@ -23,6 +23,7 @@ class PhysicsSystem:
         self.hitbox_sys = HitboxSystem(entity_manager)
 
     def update(self, dt):
+        # update shapes (hitboxes)
         self.hitbox_sys.update(dt)
 
         # force generating systems

@@ -2,7 +2,7 @@ import socket
 import pickle
 
 IS_LOGGED = False
-PORT = 2345
+PORT = 31415
 HEADER = 10
 
 __instance = None

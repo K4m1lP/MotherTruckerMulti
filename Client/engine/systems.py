@@ -419,21 +419,20 @@ class AnimationSystem:
             anim_comp = self.entity_manager.get_component_of_class(AnimationComponent(), ent)
             rend_comp = self.entity_manager.get_component_of_class(RenderComponent(), ent)
 
-            if anim_comp:
-                if anim_comp and rend_comp:
-                    # if it's time to change texture:
-                    if (get_time() - anim_comp.last_time_changed) > anim_comp.change_time:
-                        anim_comp.last_time_changed = get_time()
-                        # take next img of animation
-                        anim_comp.curr_img_idx += 1
-                        # if we run out of imgs delete entity totally
-                        if anim_comp.curr_img_idx == anim_comp.img_num:
-                            self.entity_manager.remove_entity(ent)
-                            break
-                        # else change render component img
-                        else:
-                            rend_comp.img_name = anim_comp.img_name + '{}'.format(anim_comp.curr_img_idx) + '.png'
-                            rend_comp.ready = True
+            if anim_comp and rend_comp:
+                # if it's time to change texture:
+                if (get_time() - anim_comp.last_time_changed) > anim_comp.change_time:
+                    anim_comp.last_time_changed = get_time()
+                    # take next img of animation
+                    anim_comp.curr_img_idx += 1
+                    # if we run out of images delete entity totally
+                    if anim_comp.curr_img_idx == anim_comp.img_num:
+                        self.entity_manager.remove_entity(ent)
+                        break
+                    # else change render component img
+                    else:
+                        rend_comp.img_name = anim_comp.img_name + '{}'.format(anim_comp.curr_img_idx) + '.png'
+                        rend_comp.ready = True
 
 
 # multiplayer...
